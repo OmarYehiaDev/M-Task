@@ -68,7 +68,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ProfileScreen(),
+                        builder: (context) => ProfileScreen(user: _user),
                       ),
                     );
                   },
@@ -93,7 +93,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SettingsScreen(),
+                        builder: (context) => SettingsScreen(
+                          user: _user,
+                        ),
                       ),
                     );
                   },

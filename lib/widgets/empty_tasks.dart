@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 import '../models/project.dart';
 import '../screens/add_task_screen.dart';
 
-class NoTasksWidget extends StatelessWidget {
+class NoTasksWidget extends StatefulWidget {
   final Project project;
   const NoTasksWidget({
     Key? key,
     required this.project,
   }) : super(key: key);
 
+  @override
+  State<NoTasksWidget> createState() => _NoTasksWidgetState();
+}
+
+class _NoTasksWidgetState extends State<NoTasksWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -41,14 +46,15 @@ class NoTasksWidget extends StatelessWidget {
           height: 54,
           margin: const EdgeInsets.fromLTRB(75, 40, 75, 0),
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
+            onPressed: () async {
+              bool res = (await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => AddTask(
-                    project: project,
+                    project: widget.project,
                   ),
                 ),
-              );
+              ))!;
+              if (res) setState(() {});
             },
             child: const Text(
               'Add Tasks',

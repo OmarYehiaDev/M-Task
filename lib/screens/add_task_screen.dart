@@ -54,9 +54,9 @@ class _AddTask extends State<AddTask> {
           color: Colors.white,
           size: 30.0,
         ),
-        title: const Center(
+        title: Center(
           child: Text(
-            'Project1',
+            _project.title,
             style: TextStyle(
               fontSize: 30,
               color: Colors.white,
@@ -70,6 +70,11 @@ class _AddTask extends State<AddTask> {
               ],
             ),
           ),
+        ),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
         ),
       ),
       body: Container(
@@ -164,8 +169,7 @@ class _AddTask extends State<AddTask> {
                           right: 20.0,
                         ),
                         width: 150,
-                        height: 70,
-                        child: Row(
+                        child: Column(
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -173,7 +177,7 @@ class _AddTask extends State<AddTask> {
                             ),
                             ElevatedButton(
                               child: Text(
-                                "Selected date is " + startDate,
+                                "Selected date is\n" + startDate,
                               ),
                               onPressed: () async {
                                 DateTime _selected = (await showDatePicker(
@@ -198,8 +202,7 @@ class _AddTask extends State<AddTask> {
                           left: 20.0,
                         ),
                         width: 150,
-                        height: 70,
-                        child: Row(
+                        child: Column(
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -207,7 +210,7 @@ class _AddTask extends State<AddTask> {
                             ),
                             ElevatedButton(
                               child: Text(
-                                "Selected date is " + endDate,
+                                "Selected date is\n" + endDate,
                               ),
                               onPressed: () async {
                                 DateTime _selected = (await showDatePicker(
@@ -247,14 +250,17 @@ class _AddTask extends State<AddTask> {
                         if (res) {
                           taskNameCon.clear();
                           noteCon.clear();
-                          selectedStartDate = DateTime.now();
-                          selectedEndDate = DateTime.now();
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               backgroundColor: Colors.green,
                               content: Text("Added task successfully"),
                             ),
                           );
+                          setState(() {
+                            selectedStartDate = DateTime.now();
+                            selectedEndDate = DateTime.now();
+                          });
                         }
                       } else if (_taskName.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(

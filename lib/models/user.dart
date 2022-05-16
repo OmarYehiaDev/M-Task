@@ -51,12 +51,9 @@ class User {
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         email: email ?? this.email,
-        projects: projects ??
-            this.projects,
-        tasks: tasks ??
-            this.tasks,
-        groups: groups ??
-            this.groups,
+        projects: projects ?? this.projects,
+        tasks: tasks ?? this.tasks,
+        groups: groups ?? this.groups,
       );
 
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
@@ -78,6 +75,18 @@ class User {
   Map<String, dynamic> toJson() => {
         "url": url,
         "id": id,
+        "username": username,
+        "first_name": firstName,
+        "last_name": lastName,
+        "email": email,
+        "projects": projects,
+        "tasks": tasks,
+        "group": groups,
+      };
+
+  Map<String, dynamic> toJsonMod() => {
+        "url": url,
+        "id": id.toString(),
         "username": username,
         "first_name": firstName,
         "last_name": lastName,

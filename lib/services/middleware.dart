@@ -203,18 +203,44 @@ class ApiService {
     }
   }
 
+  ///* Function made to delete users
+  Future<bool> deleteUser(User user) async {
+    String _token = _prefs.getData("token");
+    final response = await http.delete(
+      Uri.parse(user.url),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 204) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+
+      return true;
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      print(response.reasonPhrase);
+      throw Exception('Failed to delete user');
+    }
+  }
+
   ///* Function made to reset user's password
   Future<bool> resetPass(
-    String username,
     String pass,
     String passConfirm,
   ) async {
+    String _token = _prefs.getData("token");
+
     final response = await http.post(
       Uri.parse(kResetPass),
+      headers: {
+        "Authorization": _token,
+      },
       body: {
         "new_password1": pass,
         "new_password2": passConfirm,
-        "username": username,
       },
     );
 
@@ -226,7 +252,7 @@ class ApiService {
       /// If the server did not return a 200 OK response,
       /// then throw an exception.
       print(response.reasonPhrase);
-      throw Exception('Failed to logout user');
+      throw Exception('Failed to reset pass');
     }
   }
 
@@ -344,6 +370,33 @@ class ApiService {
       /// If the server did return a 200 OK response,
       /// then parse the JSON.
       return User.fromRawJson(response.body);
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
+  ///* Function made to update user
+  Future<bool> updateUser(User user) async {
+    String _token = _prefs.getData("token");
+
+    final response = await http.patch(
+      Uri.parse(
+        kUsersUrl + user.id.toString() + "/",
+      ),
+      body: user.toJsonMod(),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      return true;
+    } else if (response.statusCode == 400) {
+      return false;
     } else {
       /// If the server did not return a 200 OK response,
       /// then throw an exception.
