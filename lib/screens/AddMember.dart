@@ -1,16 +1,21 @@
-// ignore_for_file: file_names, prefer_const_constructors_in_immutables, prefer_const_constructors
+// ignore_for_file: file_names, prefer_const_constructors_in_immutables, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chips_input/flutter_chips_input.dart';
 import 'package:project/models/project.dart';
 import 'package:project/models/user.dart';
+import 'package:project/screens/members_view.dart';
 import 'package:project/services/middleware.dart';
+
+import '../models/group.dart';
 
 class AddMember extends StatefulWidget {
   final Project project;
+  final List<User>? members;
   AddMember({
     Key? key,
     required this.project,
+    this.members,
   }) : super(key: key);
 
   @override
@@ -20,9 +25,12 @@ class AddMember extends StatefulWidget {
 class _AddMemberState extends State<AddMember> {
   final _chipKey = GlobalKey<ChipsInputState>();
   final ApiService _api = ApiService();
+  final TextEditingController nameCon = TextEditingController();
   List<AppProfile> newMems = [];
   @override
   Widget build(BuildContext context) {
+    final Project project = widget.project;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff076792),
@@ -54,6 +62,7 @@ class _AddMemberState extends State<AddMember> {
       body: FutureBuilder<List<User>>(
         future: _api.getUsers(),
         builder: (context, snapshot) {
+          final List<User>? members = widget.members;
           if (snapshot.hasData) {
             final List<User> users = snapshot.data!;
             final List<AppProfile> usersProfiles = List.generate(
@@ -68,8 +77,41 @@ class _AddMemberState extends State<AddMember> {
               child: SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
+                    SizedBox(
+                      height: height * 0.2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: nameCon,
+                          decoration: const InputDecoration(
+                            hintText: "Enter group Name",
+                            hintStyle: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xffc9c9c9),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                width: 2,
+                                color: Color(0xFF09679a),
+                              ),
+                            ),
+                          ),
+                          keyboardType: TextInputType.name,
+                        ),
+                      ),
+                    ),
                     SingleChildScrollView(
                       child: ChipsInput<AppProfile>(
+                        initialValue: members != null
+                            ? members
+                                .map(
+                                  (e) => AppProfile(
+                                    e.firstName + " " + e.lastName,
+                                    e.username,
+                                  ),
+                                )
+                                .toList()
+                            : [],
                         key: _chipKey,
                         autofocus: true,
                         keyboardAppearance: Brightness.dark,
@@ -148,8 +190,67 @@ class _AddMemberState extends State<AddMember> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        // TODO: implement `addMembers` Function
+                      onPressed: () async {
+                        String title = nameCon.text;
+
+                        if (title.isNotEmpty) {
+                          Group group = await _api.createGroup(
+                            title,
+                            newMems
+                                .map(
+                                  (e) => e.email,
+                                )
+                                .toList(),
+                            project,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              dismissDirection: DismissDirection.none,
+                              backgroundColor: Colors.green,
+                              content: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    "Added successfully\n"
+                                    "Redirecting to Members Page",
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                          await Future.delayed(
+                            Duration(seconds: 4),
+                          );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MembersView(
+                                project: project.copyWith(
+                                  url: project.url,
+                                  id: project.id,
+                                  owner: project.owner,
+                                  title: project.title,
+                                  created: project.created,
+                                  tasks: project.tasks,
+                                  group: group.url,
+                                ),
+                                group: group,
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: Colors.red,
+                              content: Text("Enter Group name"),
+                            ),
+                          );
+                        }
                       },
                       child: Text('Add'),
                     ),

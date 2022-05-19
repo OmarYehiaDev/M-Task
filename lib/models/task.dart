@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:core';
-import 'project.dart';
 
 class Task {
   Task({
@@ -15,6 +14,8 @@ class Task {
     required this.start,
     required this.end,
     required this.desc,
+    required this.status,
+    required this.members,
   });
 
   final String url;
@@ -26,6 +27,8 @@ class Task {
   final DateTime start;
   final DateTime end;
   final String desc;
+  final String status;
+  final List members;
 
   Task copyWith({
     required String url,
@@ -37,6 +40,8 @@ class Task {
     required DateTime start,
     required DateTime end,
     required String desc,
+    required String status,
+    required List members,
   }) =>
       Task(
         url: url ?? this.url,
@@ -48,6 +53,8 @@ class Task {
         start: start ?? this.start,
         end: end ?? this.end,
         desc: desc ?? this.desc,
+        status: status ?? this.status,
+        members: members ?? this.members,
       );
 
   factory Task.fromRawJson(String str) => Task.fromJson(json.decode(str));
@@ -68,17 +75,21 @@ class Task {
           json["end"],
         ),
         desc: json["desc"],
+        status: json["status"],
+        members: json["members"],
       );
 
   Map<String, dynamic> toJson() => {
         "url": url,
-        "project_id": projectId,
-        "id": id,
+        "project_id": projectId.toString(),
+        "id": id.toString(),
         "owner": owner,
         "project": project,
         "title": title,
         "start": start.toIso8601String(),
         "end": end.toIso8601String(),
         "desc": desc,
+        "members": members.toString(),
+        "status": status,
       };
 }

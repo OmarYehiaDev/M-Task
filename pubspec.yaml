@@ -49,6 +49,7 @@ dependencies:
   get_storage:
   requests: ^4.2.0
   flutter_mentions: ^2.0.1
+  jiffy: ^5.0.0
 
 dev_dependencies:
   flutter_test:

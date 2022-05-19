@@ -3,13 +3,18 @@ import 'package:project/models/project.dart';
 
 import '../screens/AddMember.dart';
 
-class NoGroupsWidget extends StatelessWidget {
+class NoGroupsWidget extends StatefulWidget {
   final Project project;
   const NoGroupsWidget({
     Key? key,
     required this.project,
   }) : super(key: key);
 
+  @override
+  State<NoGroupsWidget> createState() => _NoGroupsWidgetState();
+}
+
+class _NoGroupsWidgetState extends State<NoGroupsWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,14 +43,16 @@ class NoGroupsWidget extends StatelessWidget {
           height: 54,
           margin: const EdgeInsets.fromLTRB(75, 40, 75, 0),
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(
+            onPressed: () async {
+              bool res = (await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => AddMember(
-                    project: project,
+                    project: widget.project,
+                    
                   ),
                 ),
-              );
+              ))!;
+              res ? setState(() {}) : setState(() {});
             },
             child: const Text(
               'Add Members',

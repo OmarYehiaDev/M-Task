@@ -5,6 +5,8 @@ import 'package:project/models/project.dart';
 import 'package:project/screens/members_view.dart';
 import 'package:project/services/middleware.dart';
 import 'package:project/widgets/empty_groups.dart';
+import '../models/group.dart';
+import '../models/user.dart';
 import '../tasks_view.dart';
 import '../widgets/empty_tasks.dart';
 import 'AddMember.dart';
@@ -20,6 +22,19 @@ class SingleProjectView extends StatefulWidget {
 }
 
 class _ProjectState extends State<SingleProjectView> {
+  List<User>? members;
+  final ApiService _api = ApiService();
+  Future<List<User>?> fetchMems() async {
+    final Project project = widget.project;
+
+    if (project.group.isNotEmpty) {
+      Group group = await _api.fetchGroup(project.group);
+      List<User> _members = await _api.getGroupMembers(group.members);
+      return _members;
+    }
+    return null;
+  }
+
   onSelected(BuildContext context, int item) async {
     switch (item) {
       case 0:
@@ -36,6 +51,7 @@ class _ProjectState extends State<SingleProjectView> {
           MaterialPageRoute(
             builder: (context) => AddMember(
               project: widget.project,
+              members: members,
             ),
           ),
         );
@@ -86,7 +102,7 @@ class _ProjectState extends State<SingleProjectView> {
   @override
   Widget build(BuildContext context) {
     final Project _project = widget.project;
-
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -140,34 +156,44 @@ class _ProjectState extends State<SingleProjectView> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: RefreshIndicator(
+        onRefresh: () {
+          return Future(() {
+            setState(() {});
+          });
+        },
+        child: ListView(
           children: [
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Text(
-                _project.title,
-                style: TextStyle(
-                  fontSize: 40.0,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff076792),
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Text(
+                  _project.title,
+                  style: TextStyle(
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff076792),
+                  ),
                 ),
               ),
             ),
-            _project.groups.isEmpty
+            _project.group.isEmpty
                 ? NoGroupsWidget(
-                  project: _project,
-                )
-                : ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => MembersView(project: _project),
-                        ),
-                      );
-                    },
-                    child: Text("View group"),
+                    project: _project,
+                  )
+                : Container(
+                    margin: EdgeInsets.symmetric(horizontal: width * 0.25),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MembersView(project: _project),
+                          ),
+                        );
+                      },
+                      child: Text("View group"),
+                    ),
                   ),
             SizedBox(
               height: 50,
@@ -176,18 +202,21 @@ class _ProjectState extends State<SingleProjectView> {
                 ? NoTasksWidget(
                     project: _project,
                   )
-                : ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => TasksView(
-                            project: _project,
+                : Container(
+                    margin: EdgeInsets.symmetric(horizontal: width * 0.25),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TasksView(
+                              project: _project,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                    child: Text("View tasks"),
+                        );
+                      },
+                      child: Text("View tasks"),
+                    ),
                   ),
           ],
         ),

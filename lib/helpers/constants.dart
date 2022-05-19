@@ -23,7 +23,7 @@ String kProjectsUrl = kBaseURL + "projects/";
 String kTasksUrl = kBaseURL + "tasks/";
 
 /// Groups' endpoint
-String kGroupsUrl = kBaseURL + "groups/";
+String kGroupsUrl = kBaseURL + "group/";
 
 /// Logo's Path
 String kLogo = "assets/images/logo00.jpeg";

@@ -20,7 +20,6 @@ class User {
     required this.email,
     required this.projects,
     required this.tasks,
-    required this.groups,
   });
 
   final String url;
@@ -31,7 +30,6 @@ class User {
   final String email;
   final List projects;
   final List tasks;
-  final List groups;
 
   User copyWith({
     required String url,
@@ -42,7 +40,6 @@ class User {
     required String email,
     required List projects,
     required List tasks,
-    required List groups,
   }) =>
       User(
         url: url ?? this.url,
@@ -53,7 +50,6 @@ class User {
         email: email ?? this.email,
         projects: projects ?? this.projects,
         tasks: tasks ?? this.tasks,
-        groups: groups ?? this.groups,
       );
 
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
@@ -69,7 +65,6 @@ class User {
         email: json["email"],
         projects: json["projects"] ?? [],
         tasks: json["tasks"] ?? [],
-        groups: json["group"] ?? [],
       );
 
   Map<String, dynamic> toJson() => {
@@ -81,7 +76,6 @@ class User {
         "email": email,
         "projects": projects,
         "tasks": tasks,
-        "group": groups,
       };
 
   Map<String, dynamic> toJsonMod() => {
@@ -93,7 +87,6 @@ class User {
         "email": email,
         "projects": projects.toString(),
         "tasks": tasks.toString(),
-        "group": groups.toString(),
       };
 }
 

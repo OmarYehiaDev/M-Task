@@ -124,7 +124,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     email: user.email,
                                     projects: user.projects,
                                     tasks: user.tasks,
-                                    groups: user.groups,
                                   ),
                                 );
                                 if (res) {

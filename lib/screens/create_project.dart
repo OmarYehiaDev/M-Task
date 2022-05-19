@@ -82,7 +82,7 @@ class _NewProjectState extends State<NewProject> {
               margin: const EdgeInsets.fromLTRB(43, 24, 43, 15),
               child: SizedBox(
                 height: 45,
-                child: TextField(
+                child: TextFormField(
                   controller: projectName,
                   decoration: const InputDecoration(
                     hintText: "Enter project Name", //اليوسر يدخل اسم المشروع

@@ -1,7 +1,8 @@
+// ignore_for_file: file_names, prefer_const_constructors, avoid_unnecessary_containers, unnecessary_null_comparison
+
 import 'package:flutter/material.dart';
 import 'package:project/screens/home.dart';
 
-import 'screens/AddMember.dart';
 
 class EditMember extends StatefulWidget {
   const EditMember({Key? key}) : super(key: key);
@@ -190,7 +191,7 @@ class _EditMemberState extends State<EditMember> {
         break;
       case 1:
         List<String> litems = [];
-        TextEditingController txt = new TextEditingController();
+        TextEditingController txt = TextEditingController();
         showDialog<String>(
             context: context,
             builder: (BuildContext context) => AlertDialog(
@@ -252,7 +253,7 @@ class _EditMemberState extends State<EditMember> {
                                   index -= 1;
                                   {
                                     TextEditingController ntxt =
-                                        new TextEditingController();
+                                        TextEditingController();
                                     ntxt.text = litems[index].toString();
                                     return //shrinkWrap: true,
 

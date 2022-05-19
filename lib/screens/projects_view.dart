@@ -7,8 +7,6 @@ import 'package:project/models/user.dart';
 import 'package:project/screens/single_project_view.dart';
 import 'package:project/services/middleware.dart';
 
-import '../tasks_view.dart';
-
 class ProjectsView extends StatefulWidget {
   final List<dynamic> projects;
   final User user;

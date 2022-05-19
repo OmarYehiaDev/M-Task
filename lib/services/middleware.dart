@@ -1,7 +1,8 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:project/helpers/constants.dart';
 import 'package:project/services/sharedPrefs.dart';
 
@@ -35,6 +36,8 @@ class ApiService {
       String _token = jsonDecode(response.body)["key"];
       await _prefs.saveData("token", "Token $_token");
       return true;
+    } else if (response.statusCode == 400) {
+      return false;
     } else {
       /// If the server did not return a 200 OK response,
       /// then throw an exception.
@@ -63,6 +66,66 @@ class ApiService {
       /// then throw an exception.
       print(response.reasonPhrase);
       throw Exception('Failed to logout user');
+    }
+  }
+
+  ///* Function made to fetch group members
+  Future<List<User>> getGroupMembers(List members) async {
+    List<String> _urls = members
+        .map(
+          (e) => e.toString(),
+        )
+        .toList();
+    List<User> _list = [];
+    try {
+      for (String url in _urls) {
+        User _singleUser = await fetchUser(url);
+        _list.add(_singleUser);
+      }
+
+      print(_list.length);
+
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+
+      return _list;
+    } catch (e) {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      print(
+        e.toString(),
+      );
+      throw Exception('Failed to get tasks');
+    }
+  }
+
+  ///* Function made to fetch task members
+  Future<List<User>> getTaskMembers(List members) async {
+    List<String> _urls = members
+        .map(
+          (e) => e.toString(),
+        )
+        .toList();
+    List<User> _list = [];
+    try {
+      for (String url in _urls) {
+        User _singleUser = await fetchUser(url);
+        _list.add(_singleUser);
+      }
+
+      print(_list.length);
+
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+
+      return _list;
+    } catch (e) {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      print(
+        e.toString(),
+      );
+      throw Exception('Failed to get tasks');
     }
   }
 
@@ -311,6 +374,62 @@ class ApiService {
     }
   }
 
+  ///* Function made to leave task
+  Future<void> leaveTask(
+    BuildContext context,
+    Project project,
+    Task task,
+  ) async {
+
+    User current = await fetchUserData();
+    List<String> members = task.members.cast<String>();
+    List<String> userTasks = current.tasks.cast<String>();
+
+    if (members.contains(current.url)) {
+      members.remove(current.url);
+      userTasks.remove(task.url);
+      Task _task = task.copyWith(
+        url: task.url,
+        projectId: task.projectId,
+        id: task.id,
+        owner: task.owner,
+        project: task.project,
+        title: task.title,
+        start: task.start,
+        end: task.end,
+        desc: task.desc,
+        status: task.status,
+        members: members,
+      );
+      User user = current.copyWith(
+        url: current.url,
+        id: current.id,
+        firstName: current.firstName,
+        lastName: current.lastName,
+        username: current.username,
+        email: current.email,
+        projects: current.projects,
+        tasks: userTasks,
+      );
+      bool res1 = await updateTask(_task);
+      bool res2 = await updateUser(user);
+      if (res1 && res2) {
+        /// If the server did return a 200 OK response,
+        /// then parse the JSON.
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text("Left task successfully"),
+          ),
+        );
+      } else {
+        /// If the server did not return a 200 OK response,
+        /// then throw an exception.
+        throw Exception('Failed to leave task');
+      }
+    }
+  }
+
   ///* Function made to retrieve one task per url
   Future<Task> fetchTask(String url) async {
     String _token = _prefs.getData("token");
@@ -383,7 +502,7 @@ class ApiService {
 
     final response = await http.patch(
       Uri.parse(
-        kUsersUrl + user.id.toString() + "/",
+        user.url,
       ),
       body: user.toJsonMod(),
       headers: {
@@ -404,16 +523,118 @@ class ApiService {
     }
   }
 
+  ///* Function made to update project
+  Future<bool> updateProject(Project project) async {
+    String _token = _prefs.getData("token");
+
+    final response = await http.patch(
+      Uri.parse(
+        project.url,
+      ),
+      body: project.toJson(),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      return true;
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
+  ///* Function made to update task
+  Future<bool> updateTask(Task task) async {
+    String _token = _prefs.getData("token");
+
+    final response = await http.patch(
+      Uri.parse(
+        task.url,
+      ),
+      body: task.toJson(),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      return true;
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
   ///* Function made to retrieve one group per url
   Future<Group> fetchGroup(String url) async {
+    String _token = _prefs.getData("token");
+
     final response = await http.get(
       Uri.parse(url),
+      headers: {
+        "Authorization": _token,
+      },
     );
 
     if (response.statusCode == 200) {
       /// If the server did return a 200 OK response,
       /// then parse the JSON.
       return Group.fromRawJson(response.body);
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
+  ///* Function made to create groups
+  Future<Group> createGroup(
+    String title,
+    List<String> members,
+    Project project,
+  ) async {
+    String _token = _prefs.getData("token");
+
+    final response = await http.post(
+      Uri.parse(kGroupsUrl),
+      body: {
+        "title": title,
+        "member": members,
+        "active": true,
+      },
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 201) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      Group group = Group.fromRawJson(response.body);
+      bool updated = await updateProject(
+        project.copyWith(
+          url: project.url,
+          id: project.id,
+          owner: project.owner,
+          title: project.title,
+          created: project.created,
+          tasks: project.tasks,
+          group: group.url,
+        ),
+      );
+      if (updated) {
+        return group;
+      } else {
+        throw Exception("Failed to update");
+      }
     } else {
       /// If the server did not return a 200 OK response,
       /// then throw an exception.

@@ -3,8 +3,6 @@
 import 'dart:convert';
 import 'dart:core';
 
-import '../services/middleware.dart';
-
 class Group {
   Group({
     required this.url,
@@ -13,7 +11,6 @@ class Group {
     required this.members,
     required this.created,
     required this.active,
-    required this.project,
   });
 
   final String url;
@@ -22,7 +19,6 @@ class Group {
   final List members;
   final DateTime created;
   final bool active;
-  final String project;
 
   Group copyWith({
     required String url,
@@ -31,7 +27,6 @@ class Group {
     required List members,
     required DateTime created,
     required bool active,
-    required String project,
   }) =>
       Group(
         url: url ?? this.url,
@@ -40,7 +35,6 @@ class Group {
         members: members ?? this.members,
         created: created ?? this.created,
         active: active ?? this.active,
-        project: project ?? this.project,
       );
 
   factory Group.fromRawJson(String str) => Group.fromJson(json.decode(str));
@@ -52,12 +46,11 @@ class Group {
       url: json["url"],
       title: json["title"],
       owner: json["owner"],
-      members: json["members"] ?? [],
+      members: json["member"] ?? [],
       created: DateTime.parse(
         json["created"],
       ),
       active: json["active"],
-      project: json["project"],
     );
   }
 
@@ -65,9 +58,8 @@ class Group {
         "url": url,
         "title": title,
         "owner": owner,
-        "members": members.toString(),
+        "member": members,
         "created": created.toIso8601String(),
         "active": active,
-        "project": project,
       };
 }

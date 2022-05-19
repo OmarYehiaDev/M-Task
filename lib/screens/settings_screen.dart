@@ -138,26 +138,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const SizedBox(
                 height: 50,
               ),
-              TextButton.icon(
-                icon: Icon(
-                  Icons.delete,
-                  size: 30,
-                  color: Color(0xff076792),
-                ),
-                label: Text(
-                  'Clear Your Project',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Color(0xff076792),
-                  ),
-                ),
-                onPressed: () {
-                  // TODO: Make `DeleteProjects Function`
-                },
-              ),
-              const SizedBox(
-                height: 50,
-              ),
+              // TextButton.icon(
+              //   icon: Icon(
+              //     Icons.delete,
+              //     size: 30,
+              //     color: Color(0xff076792),
+              //   ),
+              //   label: Text(
+              //     'Clear Your Projects',
+              //     style: TextStyle(
+              //       fontSize: 20,
+              //       color: Color(0xff076792),
+              //     ),
+              //   ),
+              //   onPressed: () {
+              // ignore: todo
+              //     // TODO: Make `DeleteProjects Function`
+              //   },
+              // ),
+              // const SizedBox(
+              //   height: 50,
+              // ),
               TextButton.icon(
                 icon: Icon(
                   Icons.warning,

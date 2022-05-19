@@ -1,25 +1,10 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'package:project/model/project_model.dart';
-import 'package:project/model/task_model.dart';
-
 import 'package:flutter/services.dart'; // landscape off
-// import 'package:project/screens/AddMember.dart';
-// import 'package:project/screens/addWork_screen.dart';
-// import 'package:project/screens/creat_project.dart';
-// import 'package:project/screens/edit_member.dart';
-// import 'package:project/screens/onboarding_screens.dart';
-// import 'package:project/screens/project.dart';
-// import 'package:project/screens/project_dtetailForTest.dart';
-// import 'package:project/sing_up_alkilany.dart';
-// import 'package:project/supScreens/add_work_screen.dart';
-// import 'package:project/task_View.dart';
-// import 'package:project/tasksById.dart';
-// import 'package:project/timetest.dart';
-import 'package:provider/provider.dart';
-import 'model/addWork_data.dart';
 
 import 'screens/onboarding_screens.dart';
 import 'services/sharedPrefs.dart';
@@ -46,27 +31,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<TaskData>(
-          create: (context) => TaskData(),
-        ),
-        ChangeNotifierProvider<TaskProvider>(
-          create: (context) => TaskProvider(),
-        ),
-        ChangeNotifierProvider<ProjectProvider>(
-          create: (context) => ProjectProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        builder: (_, child) => Portal(child: child!),
-        title: 'M Task',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: OnboardingScreen(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      builder: (_, child) => Portal(child: child!),
+      title: 'M Task',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: OnboardingScreen(),
     );
   }
 }

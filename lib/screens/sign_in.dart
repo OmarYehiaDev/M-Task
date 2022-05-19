@@ -194,6 +194,15 @@ class _SignInState extends State<SignIn> {
                       builder: (_) => HomePage(),
                     ),
                   );
+                } else if (!result) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text(
+                        "username or password is wrong\n" "Try again",
+                      ),
+                    ),
+                  );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

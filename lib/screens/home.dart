@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                           height: 60.0,
                         ),
                         const Text(
-                          "You Don\'t Have Any Projects Yet.",
+                          "You Don't Have Any Projects Yet.",
                           style: TextStyle(
                             fontSize: 27,
                           ),

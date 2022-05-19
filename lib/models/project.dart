@@ -2,9 +2,6 @@
 
 import 'dart:convert';
 import 'dart:core';
-import '../services/middleware.dart';
-import 'task.dart';
-import 'group.dart';
 
 class Project {
   Project({
@@ -14,7 +11,7 @@ class Project {
     required this.title,
     required this.created,
     required this.tasks,
-    required this.groups,
+    required this.group,
   });
 
   final String url;
@@ -23,7 +20,7 @@ class Project {
   final String title;
   final DateTime created;
   final List tasks;
-  final List groups;
+  final String group;
 
   Project copyWith({
     required String url,
@@ -32,7 +29,7 @@ class Project {
     required String title,
     required DateTime created,
     required List tasks,
-    required List groups,
+    required String group,
   }) =>
       Project(
         url: url ?? this.url,
@@ -41,7 +38,7 @@ class Project {
         title: title ?? this.title,
         created: created ?? this.created,
         tasks: tasks ?? this.tasks,
-        groups: groups ?? this.groups,
+        group: group ?? this.group,
       );
 
   factory Project.fromRawJson(String str) => Project.fromJson(json.decode(str));
@@ -57,7 +54,7 @@ class Project {
           json["created"],
         ),
         tasks: json["tasks"] ?? [],
-        groups: json["groups"] ?? [],
+        group: json["group"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -67,6 +64,6 @@ class Project {
         "title": title,
         "created": created.toIso8601String(),
         "tasks": tasks.toString(),
-        "groups": groups.toString(),
+        "group": group,
       };
 }
