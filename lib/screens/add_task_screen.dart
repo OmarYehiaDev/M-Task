@@ -1,9 +1,14 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chips_input/flutter_chips_input.dart';
 import 'package:intl/intl.dart';
 import 'package:project/models/project.dart';
 import 'package:project/services/middleware.dart';
+
+import '../models/group.dart';
+import '../models/user.dart';
+import 'AddMember.dart';
 // import 'package:project/screens/addWork_screen.dart';
 
 class AddTask extends StatefulWidget {
@@ -23,6 +28,9 @@ class _AddTask extends State<AddTask> {
   TextEditingController noteCon = TextEditingController();
   DateTime selectedStartDate = DateTime.now();
   DateTime selectedEndDate = DateTime.now();
+  final _chipKey = GlobalKey<ChipsInputState>();
+
+  List<AppProfile> newMems = [];
 
   @override
   Widget build(BuildContext context) {
@@ -232,6 +240,193 @@ class _AddTask extends State<AddTask> {
                   ],
                 ),
               ),
+              FutureBuilder<Group>(
+                future: _api.fetchGroup(_project.group),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasError) Text("Error Happened");
+                  if (snapshot.hasData) {
+                    Group group = snapshot.data!;
+                    return FutureBuilder<List<User>>(
+                      future: _api.getGroupMembers(group.members),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final List<User> users = snapshot.data!;
+                          final List<AppProfile> usersProfiles = List.generate(
+                            users.length,
+                            (i) => AppProfile(
+                              users[i].firstName + " " + users[i].lastName,
+                              users[i].username,
+                              users[i].url,
+                            ),
+                          );
+                          return Padding(
+                            padding: EdgeInsets.all(20),
+                            child: SingleChildScrollView(
+                              child: ChipsInput<AppProfile>(
+                                key: _chipKey,
+                                autofocus: true,
+                                keyboardAppearance: Brightness.dark,
+                                textCapitalization: TextCapitalization.words,
+                                textStyle: const TextStyle(
+                                  height: 1.5,
+                                  fontFamily: 'Roboto',
+                                  fontSize: 16,
+                                ),
+                                decoration: const InputDecoration(
+                                  labelText: 'Select People',
+                                ),
+                                findSuggestions: (String query) {
+                                  if (query.isNotEmpty) {
+                                    var lowercaseQuery = query.toLowerCase();
+                                    return usersProfiles.where(
+                                      (profile) {
+                                        return profile.name
+                                                .toLowerCase()
+                                                .contains(
+                                                  query.toLowerCase(),
+                                                ) ||
+                                            profile.email
+                                                .toLowerCase()
+                                                .contains(
+                                                  query.toLowerCase(),
+                                                );
+                                      },
+                                    ).toList(
+                                      growable: false,
+                                    )..sort(
+                                        (a, b) => a.name
+                                            .toLowerCase()
+                                            .indexOf(
+                                              lowercaseQuery,
+                                            )
+                                            .compareTo(
+                                              b.name.toLowerCase().indexOf(
+                                                    lowercaseQuery,
+                                                  ),
+                                            ),
+                                      );
+                                  }
+                                  return usersProfiles;
+                                },
+                                onChanged: (data) {
+                                  // print(data);
+                                },
+                                chipBuilder: (context, state, profile) {
+                                  return InputChip(
+                                    key: ObjectKey(profile),
+                                    label: Text(profile.name),
+                                    avatar:
+                                        const Icon(Icons.account_box_rounded),
+                                    onDeleted: () {
+                                      state.deleteChip(
+                                        profile,
+                                      );
+                                      newMems.remove(profile);
+                                    },
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                  );
+                                },
+                                suggestionBuilder: (context, state, profile) {
+                                  return ListTile(
+                                    key: ObjectKey(profile),
+                                    leading: Icon(
+                                      Icons.account_box_rounded,
+                                    ),
+                                    title: Text(profile.name),
+                                    subtitle: Text(profile.email),
+                                    onTap: () {
+                                      state.selectSuggestion(
+                                        profile,
+                                      );
+                                      newMems.add(profile);
+                                    },
+                                  );
+                                },
+                              ),
+
+                              // ElevatedButton(
+                              //   onPressed: () async {
+                              //     String title = nameCon.text;
+
+                              //     if (title.isNotEmpty) {
+                              //       Group group = await _api.createGroup(
+                              //         title,
+                              // newMems
+                              //     .map(
+                              //       (e) => e.url,
+                              //     )
+                              //     .toList(),
+                              //         project,
+                              //       );
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //           dismissDirection: DismissDirection.none,
+                              //           backgroundColor: Colors.green,
+                              //           content: Row(
+                              //             mainAxisAlignment:
+                              //                 MainAxisAlignment.spaceAround,
+                              //             children: [
+                              //               Text(
+                              //                 "Added successfully\n"
+                              //                 "Redirecting to Members Page",
+                              //               ),
+                              //               Padding(
+                              //                 padding: EdgeInsets.all(8),
+                              //                 child: CircularProgressIndicator(),
+                              //               ),
+                              //             ],
+                              //           ),
+                              //         ),
+                              //       );
+                              //       await Future.delayed(
+                              //         Duration(seconds: 4),
+                              //       );
+                              //       Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //           builder: (_) => MembersView(
+                              //             project: project.copyWith(
+                              //               url: project.url,
+                              //               id: project.id,
+                              //               owner: project.owner,
+                              //               title: project.title,
+                              //               created: project.created,
+                              //               tasks: project.tasks,
+                              //               group: group.url,
+                              //             ),
+                              //             group: group,
+                              //           ),
+                              //         ),
+                              //       );
+                              //     } else {
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //           backgroundColor: Colors.red,
+                              //           content: Text("Enter Group name"),
+                              //         ),
+                              //       );
+                              //     }
+                              //   },
+                              //   child: Text('Add'),
+                              // ),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text("Error Happened");
+                        }
+
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
               SizedBox(
                 height: 200,
                 child: Center(
@@ -246,6 +441,11 @@ class _AddTask extends State<AddTask> {
                           _taskNote,
                           selectedStartDate,
                           selectedEndDate,
+                          newMems
+                              .map(
+                                (e) => e.url,
+                              )
+                              .toList(),
                         );
                         if (res) {
                           taskNameCon.clear();

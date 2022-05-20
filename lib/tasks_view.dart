@@ -277,22 +277,19 @@ class _TaskListState extends State<TaskList> {
                                     ),
                                   ),
                                   isThreeLine: true,
-                                  subtitle: Wrap(
-                                    children: members
-                                        .map(
-                                          (e) => Text(
-                                            e.username,
-                                            style: const TextStyle(
-                                              color: Color.fromARGB(
-                                                255,
-                                                133,
-                                                186,
-                                                202,
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
+                                  subtitle: Text(
+                                    members
+                                        .map((e) => e.username)
+                                        .toList()
+                                        .join(" - "),
+                                    style: const TextStyle(
+                                      color: Color.fromARGB(
+                                        255,
+                                        133,
+                                        186,
+                                        202,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],

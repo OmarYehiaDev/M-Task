@@ -94,7 +94,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               end: task.end,
                               desc: task.desc,
                               status: "done",
-                              members: task.members,
+                              members: task.members.cast<String>(),
                             );
                             bool res = await _api.updateTask(_task);
                             res
@@ -139,7 +139,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                 actions: [
                   PopupMenuButton<int>(
                     onSelected: (int item) => onSelected(context, item),
-                    itemBuilder: (context) => project.owner == user.username
+                    itemBuilder: (context) => project.owner == user.username &&
+                            editors
+                                .map((e) => e.username)
+                                .contains(user.username)
                         ? [
                             const PopupMenuItem<int>(
                               value: 0,
@@ -160,19 +163,28 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               child: Text("Edit task"),
                             ),
                           ]
-                        : [
-                            const PopupMenuItem<int>(
-                              value: 0,
-                              child: Text("Leave task"),
-                            ),
-                            const PopupMenuDivider(
-                              height: 1,
-                            ),
-                            const PopupMenuItem<int>(
-                              value: 1,
-                              child: Text("Update task status"),
-                            ),
-                          ],
+                        : !editors
+                                .map((e) => e.username)
+                                .contains(user.username)
+                            ? [
+                                PopupMenuItem<int>(
+                                  value: 2,
+                                  child: Text("Edit task"),
+                                ),
+                              ]
+                            : [
+                                const PopupMenuItem<int>(
+                                  value: 0,
+                                  child: Text("Leave task"),
+                                ),
+                                const PopupMenuDivider(
+                                  height: 1,
+                                ),
+                                const PopupMenuItem<int>(
+                                  value: 1,
+                                  child: Text("Update task status"),
+                                ),
+                              ],
                   ),
                 ],
               ),

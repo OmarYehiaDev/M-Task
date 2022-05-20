@@ -70,6 +70,7 @@ class _AddMemberState extends State<AddMember> {
               (i) => AppProfile(
                 users[i].firstName + " " + users[i].lastName,
                 users[i].username,
+                users[i].url,
               ),
             );
             return Padding(
@@ -106,9 +107,9 @@ class _AddMemberState extends State<AddMember> {
                             ? members
                                 .map(
                                   (e) => AppProfile(
-                                    e.firstName + " " + e.lastName,
-                                    e.username,
-                                  ),
+                                      e.firstName + " " + e.lastName,
+                                      e.username,
+                                      e.url),
                                 )
                                 .toList()
                             : [],
@@ -198,7 +199,7 @@ class _AddMemberState extends State<AddMember> {
                             title,
                             newMems
                                 .map(
-                                  (e) => e.email,
+                                  (e) => e.url,
                                 )
                                 .toList(),
                             project,
@@ -274,11 +275,13 @@ class _AddMemberState extends State<AddMember> {
 class AppProfile {
   final String name;
   final String email;
+  final String url;
   //final String imageUrl;
 
   const AppProfile(
     this.name,
     this.email,
+    this.url,
   );
 
   @override

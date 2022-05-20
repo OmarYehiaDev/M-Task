@@ -89,7 +89,7 @@ class Task {
         "start": start.toIso8601String(),
         "end": end.toIso8601String(),
         "desc": desc,
-        "members": members.toString(),
+        "members": members,
         "status": status,
       };
 }

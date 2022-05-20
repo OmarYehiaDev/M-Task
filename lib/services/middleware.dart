@@ -188,19 +188,25 @@ class ApiService {
     String desc,
     DateTime startDate,
     DateTime endDate,
+    List<String> members,
   ) async {
     String _token = _prefs.getData("token");
     final response = await http.post(
       Uri.parse(kTasksUrl),
-      body: {
-        "project": project,
-        "title": title,
-        "start": startDate.toIso8601String(),
-        "end": endDate.toIso8601String(),
-        "desc": desc
-      },
+      body: jsonEncode(
+        {
+          "project": project,
+          "title": title,
+          "start": startDate.toIso8601String(),
+          "end": endDate.toIso8601String(),
+          "desc": desc,
+          "status": "todo",
+          "members": members,
+        },
+      ),
       headers: {
         "Authorization": _token,
+        "Content-Type": "application/json",
       },
     );
 
@@ -380,7 +386,6 @@ class ApiService {
     Project project,
     Task task,
   ) async {
-
     User current = await fetchUserData();
     List<String> members = task.members.cast<String>();
     List<String> userTasks = current.tasks.cast<String>();
@@ -531,9 +536,12 @@ class ApiService {
       Uri.parse(
         project.url,
       ),
-      body: project.toJson(),
+      body: jsonEncode(
+        project.toJson(),
+      ),
       headers: {
         "Authorization": _token,
+        "Content-Type": "application/json",
       },
     );
 
@@ -556,9 +564,10 @@ class ApiService {
       Uri.parse(
         task.url,
       ),
-      body: task.toJson(),
+      body: jsonEncode(task.toJson()),
       headers: {
         "Authorization": _token,
+        "Content-Type": "application/json",
       },
     );
 
@@ -605,13 +614,16 @@ class ApiService {
 
     final response = await http.post(
       Uri.parse(kGroupsUrl),
-      body: {
-        "title": title,
-        "member": members,
-        "active": true,
-      },
+      body: jsonEncode(
+        {
+          "title": title,
+          "member": members,
+          "active": true.toString(),
+        },
+      ),
       headers: {
         "Authorization": _token,
+        "Content-Type": "application/json",
       },
     );
 

@@ -63,7 +63,7 @@ class Project {
         "owner": owner,
         "title": title,
         "created": created.toIso8601String(),
-        "tasks": tasks.toString(),
+        "tasks": tasks,
         "group": group,
       };
 }
