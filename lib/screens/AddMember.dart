@@ -12,10 +12,12 @@ import '../models/group.dart';
 class AddMember extends StatefulWidget {
   final Project project;
   final List<User>? members;
+  final Group? group;
   AddMember({
     Key? key,
     required this.project,
     this.members,
+    this.group,
   }) : super(key: key);
 
   @override
@@ -30,14 +32,15 @@ class _AddMemberState extends State<AddMember> {
   @override
   Widget build(BuildContext context) {
     final Project project = widget.project;
+    final Group? group = widget.group;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff076792),
-        title: const Padding(
+        title: Padding(
           padding: EdgeInsets.all(8.0),
           child: Text(
-            'Add Members',
+            group != null ? "Edit members" : 'Add Members',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -63,6 +66,7 @@ class _AddMemberState extends State<AddMember> {
         future: _api.getUsers(),
         builder: (context, snapshot) {
           final List<User>? members = widget.members;
+          if (group != null) nameCon.text = group.title;
           if (snapshot.hasData) {
             final List<User> users = snapshot.data!;
             final List<AppProfile> usersProfiles = List.generate(
@@ -107,9 +111,10 @@ class _AddMemberState extends State<AddMember> {
                             ? members
                                 .map(
                                   (e) => AppProfile(
-                                      e.firstName + " " + e.lastName,
-                                      e.username,
-                                      e.url),
+                                    e.firstName + " " + e.lastName,
+                                    e.username,
+                                    e.url,
+                                  ),
                                 )
                                 .toList()
                             : [],
@@ -155,7 +160,7 @@ class _AddMemberState extends State<AddMember> {
                           return usersProfiles;
                         },
                         onChanged: (data) {
-                          // print(data);
+                          newMems = data;
                         },
                         chipBuilder: (context, state, profile) {
                           return InputChip(
@@ -194,7 +199,7 @@ class _AddMemberState extends State<AddMember> {
                       onPressed: () async {
                         String title = nameCon.text;
 
-                        if (title.isNotEmpty) {
+                        if (title.isNotEmpty && group == null) {
                           Group group = await _api.createGroup(
                             title,
                             newMems
@@ -244,6 +249,69 @@ class _AddMemberState extends State<AddMember> {
                               ),
                             ),
                           );
+                        } else if (group != null) {
+                          Group updated = group.copyWith(
+                            url: group.url,
+                            title: title,
+                            owner: group.owner,
+                            members: newMems
+                                .map(
+                                  (e) => e.url,
+                                )
+                                .toList(),
+                            created: group.created,
+                            active: group.active,
+                          );
+                          bool res = await _api.updateGroup(updated);
+                          if (res) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                dismissDirection: DismissDirection.none,
+                                backgroundColor: Colors.green,
+                                content: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      "Updated successfully\n"
+                                      "Redirecting to Members Page",
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                            await Future.delayed(
+                              Duration(seconds: 4),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => MembersView(
+                                  project: project.copyWith(
+                                    url: project.url,
+                                    id: project.id,
+                                    owner: project.owner,
+                                    title: project.title,
+                                    created: project.created,
+                                    tasks: project.tasks,
+                                    group: group.url,
+                                  ),
+                                  group: updated,
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.red,
+                                content: Text("Error Happened"),
+                              ),
+                            );
+                          }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

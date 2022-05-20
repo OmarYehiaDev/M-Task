@@ -556,6 +556,34 @@ class ApiService {
     }
   }
 
+  ///* Function made to update group
+  Future<bool> updateGroup(Group group) async {
+    String _token = _prefs.getData("token");
+
+    final response = await http.patch(
+      Uri.parse(
+        group.url,
+      ),
+      body: jsonEncode(
+        group.toJson(),
+      ),
+      headers: {
+        "Authorization": _token,
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      return true;
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
   ///* Function made to update task
   Future<bool> updateTask(Task task) async {
     String _token = _prefs.getData("token");
