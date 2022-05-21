@@ -180,7 +180,8 @@ class _TaskListState extends State<TaskList> {
                               9,
                               4,
                             ),
-                            width: 100,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.25,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(19.0),
                               color: const Color(0xff076792),
