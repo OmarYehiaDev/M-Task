@@ -142,6 +142,7 @@ class _TaskListState extends State<TaskList> {
         // dynamic list
         Expanded(
           child: ListView.builder(
+            shrinkWrap: true,
             itemCount: widget.tasks.length,
             itemBuilder: (BuildContext context, int index) {
               Task _task = widget.tasks[index];
@@ -180,7 +181,6 @@ class _TaskListState extends State<TaskList> {
                               4,
                             ),
                             width: 100,
-                            height: 200,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(19.0),
                               color: const Color(0xff076792),
