@@ -450,6 +450,7 @@ class _AddTask extends State<AddTask> {
                         if (res) {
                           taskNameCon.clear();
                           noteCon.clear();
+                          newMems = [];
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

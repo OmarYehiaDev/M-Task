@@ -10,10 +10,12 @@ import '../models/user.dart';
 
 class MembersView extends StatefulWidget {
   final Project project;
+  final User? current;
   final Group? group;
   MembersView({
     Key? key,
     required this.project,
+    this.current,
     this.group,
   }) : super(key: key);
 
@@ -26,6 +28,7 @@ class _MembersViewState extends State<MembersView> {
   @override
   Widget build(BuildContext context) {
     final Project project = widget.project;
+    final User? current = widget.current;
     final Group? group = widget.group;
     return Scaffold(
       body: FutureBuilder<Group>(
@@ -36,74 +39,95 @@ class _MembersViewState extends State<MembersView> {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
           if (snapshot.hasData) {
             final Group group = snapshot.data!;
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  group.title + " group",
-                ),
-              ),
-              body: FutureBuilder<List<User>>(
-                future: _api.getGroupMembers(group.members),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    Text("Error happened ${snapshot.error}");
-                  }
-                  if (snapshot.hasData) {
-                    List<User> users = snapshot.data!;
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => AddMember(
-                                    project: project,
-                                    members: users,
-                                    group: group,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Text("Edit members"),
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: users.length,
-                            itemBuilder: (context, index) {
-                              int count = 0;
-                              User user = users[index];
-                              for (String task
-                                  in project.tasks.cast<String>()) {
-                                if (user.tasks.cast<String>().contains(task)) {
-                                  count++;
-                                }
-                              }
-                              return ListTile(
-                                leading: Icon(
-                                  project.owner == user.username
-                                      ? Icons.admin_panel_settings
-                                      : Icons.person,
-                                ),
-                                title: Text(user.username),
-                                subtitle: Text("Tasks number: $count"),
-                                trailing: project.owner == user.username
-                                    ? Text("Owner")
-                                    : Text("Member"),
-                              );
-                            },
-                          ),
-                        ],
+            return FutureBuilder<List<User>>(
+              future: _api.getGroupMembers(group.members),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  Text("Error happened ${snapshot.error}");
+                }
+                if (snapshot.hasData) {
+                  List<User> users = snapshot.data!;
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text(
+                        group.title + " group",
                       ),
-                    );
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
+                      actions: [
+                        PopupMenuButton<int>(
+                          onSelected: (int item) {
+                            switch (item) {
+                              case 0:
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => AddMember(
+                                      project: project,
+                                      members: users,
+                                      group: group,
+                                      current: current,
+                                    ),
+                                  ),
+                                );
+                                break;
+                              case 1:
+                                setState(() {});
+                                break;
+                            }
+                          },
+                          itemBuilder: (context) => current != null &&
+                                  project.owner == current.username
+                              ? [
+                                  const PopupMenuItem<int>(
+                                    value: 0,
+                                    child: Text("Edit Members"),
+                                  ),
+                                  const PopupMenuDivider(
+                                    height: 1,
+                                  ),
+                                  const PopupMenuItem<int>(
+                                    value: 1,
+                                    child: Text("Refresh"),
+                                  ),
+                                ]
+                              : [
+                                  const PopupMenuItem<int>(
+                                    value: 1,
+                                    child: Text("Refresh"),
+                                  ),
+                                ],
+                        ),
+                      ],
+                    ),
+                    body: ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        int count = 0;
+                        User user = users[index];
+                        for (String task in project.tasks.cast<String>()) {
+                          if (user.tasks.cast<String>().contains(task)) {
+                            count++;
+                          }
+                        }
+                        return ListTile(
+                          leading: Icon(
+                            project.owner == user.username
+                                ? Icons.admin_panel_settings
+                                : Icons.person,
+                          ),
+                          title: Text(user.username),
+                          subtitle: Text("Tasks number: $count"),
+                          trailing: project.owner == user.username
+                              ? Text("Owner")
+                              : Text("Member"),
+                        );
+                      },
+                    ),
                   );
-                },
-              ),
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             );
           }
           return Center(

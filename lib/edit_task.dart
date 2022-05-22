@@ -278,7 +278,6 @@ class _EditTask extends State<EditTask> {
                                 bool res = await _api.updateTask(_task);
                                 if (res) {
                                   setState(() {});
-
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       backgroundColor: Colors.green,

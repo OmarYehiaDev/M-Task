@@ -13,11 +13,13 @@ class AddMember extends StatefulWidget {
   final Project project;
   final List<User>? members;
   final Group? group;
+  final User? current;
   AddMember({
     Key? key,
     required this.project,
     this.members,
     this.group,
+    this.current,
   }) : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class _AddMemberState extends State<AddMember> {
   Widget build(BuildContext context) {
     final Project project = widget.project;
     final Group? group = widget.group;
+    final User? current = widget.current;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -246,6 +249,7 @@ class _AddMemberState extends State<AddMember> {
                                   group: group.url,
                                 ),
                                 group: group,
+                                current: current,
                               ),
                             ),
                           );
@@ -301,6 +305,7 @@ class _AddMemberState extends State<AddMember> {
                                     group: group.url,
                                   ),
                                   group: updated,
+                                  current: current,
                                 ),
                               ),
                             );
@@ -321,7 +326,7 @@ class _AddMemberState extends State<AddMember> {
                           );
                         }
                       },
-                      child: Text('Add'),
+                      child: Text(group != null ? "Update" : "Add"),
                     ),
                   ],
                 ),
