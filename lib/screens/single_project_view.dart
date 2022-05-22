@@ -45,7 +45,7 @@ class _ProjectState extends State<SingleProjectView> {
     return Scaffold(
       body: FutureBuilder<User>(
         future: _api.fetchUserData(),
-        builder: (context, snapshot) {
+        builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error Happened");
           if (snapshot.hasData) {
             User current = snapshot.data!;
@@ -53,7 +53,7 @@ class _ProjectState extends State<SingleProjectView> {
             return Scaffold(
               body: FutureBuilder<Map<int, Object>?>(
                 future: fetchMems(),
-                builder: (context, snapshot) {
+                builder: (context_, snapshot) {
                   if (snapshot.hasError) Text("Error Happened");
                   if (snapshot.hasData) {
                     Map<int, Object> data = snapshot.data!;
@@ -126,7 +126,7 @@ class _ProjectState extends State<SingleProjectView> {
                           setState(() {});
                           break;
                         case 3:
-                          setState(() {});
+                          ScaffoldMessenger.of(context_).setState(() {});
                           break;
                       }
                     }

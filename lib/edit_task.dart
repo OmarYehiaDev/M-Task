@@ -90,7 +90,7 @@ class _EditTask extends State<EditTask> {
                 ),
                 leading: BackButton(
                   onPressed: () {
-                    Navigator.pop(context, true);
+                    Navigator.pop(context, false);
                   },
                 ),
               ),
@@ -277,15 +277,7 @@ class _EditTask extends State<EditTask> {
                                   _taskNote.isNotEmpty) {
                                 bool res = await _api.updateTask(_task);
                                 if (res) {
-                                  setState(() {});
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: Colors.green,
-                                      content: Text(
-                                        "Updated task successfully",
-                                      ),
-                                    ),
-                                  );
+                                  Navigator.pop(context, res);
                                 }
                               } else if (_taskName.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -302,7 +294,6 @@ class _EditTask extends State<EditTask> {
                                   ),
                                 );
                               }
-                              Navigator.pop(context, true);
                             },
                             child: const Text(
                               "Save Changes",

@@ -26,7 +26,7 @@ class _TasksViewState extends State<TasksView> {
     return Scaffold(
       body: FutureBuilder<List<Task>>(
         future: _api.getTasks(_project.tasks),
-        builder: (context, snapshot) {
+        builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
           if (snapshot.hasData) {
             List<Task> tasks = snapshot.data!;
@@ -63,7 +63,7 @@ class _TasksViewState extends State<TasksView> {
                 actions: [
                   IconButton(
                     onPressed: () {
-                      setState(() {});
+                      ScaffoldMessenger.of(context_).setState(() {});
                     },
                     icon: Icon(Icons.refresh),
                   ),
@@ -71,25 +71,22 @@ class _TasksViewState extends State<TasksView> {
               ),
               body: Column(
                 children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(7),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 10, 10, 8),
-                          child: Text(
-                            _project.title,
-                            style: const TextStyle(
-                              color: Color(0xff076792),
-                              fontSize: 40,
-                              fontWeight: FontWeight.w600,
-                            ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(7),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 10, 10, 8),
+                        child: Text(
+                          _project.title,
+                          style: const TextStyle(
+                            color: Color(0xff076792),
+                            fontSize: 30,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                  // dynamic list
                   Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -134,7 +131,7 @@ class _TasksViewState extends State<TasksView> {
                                           0.8,
                                       height:
                                           MediaQuery.of(context).size.height *
-                                              0.25,
+                                              0.3,
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(19.0),

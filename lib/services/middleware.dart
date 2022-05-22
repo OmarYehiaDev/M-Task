@@ -139,7 +139,8 @@ class ApiService {
     List<Task> _list = [];
     try {
       for (String url in _urls) {
-        Task _singleTask = await fetchTask(url);
+        Task _singleTask 
+        = await fetchTask(url);
         _list.add(_singleTask);
       }
 
