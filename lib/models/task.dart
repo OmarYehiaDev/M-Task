@@ -93,3 +93,11 @@ class Task {
         "status": status,
       };
 }
+
+List<Task> decodeTasksFromJSON(String data) => List<Task>.from(
+      json.decode(data)["results"].map(
+            (task) => Task.fromJson(
+              task,
+            ),
+          ),
+    );

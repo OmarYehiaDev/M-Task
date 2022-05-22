@@ -36,3 +36,6 @@ String kTwitter = "assets/images/twitter.png";
 
 /// LinkedIn's logo
 String kLinked = "assets/images/linkedin.png";
+
+/// Other tasks
+String kOtherTasks = kTasksUrl + "?owner=&members=";

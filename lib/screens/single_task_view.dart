@@ -238,14 +238,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                     ),
                     body: SingleChildScrollView(
                       child: Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: width - 50,
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: width - 50,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -270,80 +270,81 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                   ],
                                 ),
                               ),
-                            ),
-                            Align(
-                              alignment: AlignmentDirectional.center,
-                              child: Card(
-                                color: Colors.blue,
-                                child: SizedBox(
-                                  width: width * 0.8,
+                              Align(
+                                alignment: AlignmentDirectional.center,
+                                child: Card(
+                                  color: Colors.blue,
+                                  child: SizedBox(
+                                    width: width * 0.8,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(32.0),
+                                      child: Text("Description: " + task.desc),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: width - 50,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Card(
+                                        color: Colors.blue,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Starts " +
+                                                Jiffy(task.start).fromNow(),
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        color: Colors.blue,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            "Ends " + Jiffy(task.end).fromNow(),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: AlignmentDirectional.center,
+                                child: Card(
+                                  color: Colors.blue,
                                   child: Padding(
                                     padding: const EdgeInsets.all(32.0),
-                                    child: Text("Description: " + task.desc),
+                                    child: Text(
+                                      "Assigned to: " +
+                                          editors
+                                              .map((e) => e.username)
+                                              .toList()
+                                              .join(" - "),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              width: width - 50,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Card(
-                                      color: Colors.blue,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Starts " +
-                                              Jiffy(task.start).fromNow(),
-                                        ),
-                                      ),
-                                    ),
-                                    Card(
-                                      color: Colors.blue,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Ends " + Jiffy(task.end).fromNow(),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: AlignmentDirectional.center,
-                              child: Card(
+                              Card(
                                 color: Colors.blue,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(32.0),
-                                  child: Text(
-                                    "Assigned to: " +
-                                        editors
-                                            .map((e) => e.username)
-                                            .toList()
-                                            .join(" - "),
-                                  ),
+                                  padding: EdgeInsets.all(8.0),
+                                  child: editors
+                                          .map((e) => e.username)
+                                          .contains(user.username)
+                                      ? Text("You're allowed to edit status")
+                                      : Text(
+                                          "You aren't allowed to edit status"),
                                 ),
                               ),
-                            ),
-                            Card(
-                              color: Colors.blue,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: editors
-                                        .map((e) => e.username)
-                                        .contains(user.username)
-                                    ? Text("You're allowed to edit status")
-                                    : Text("You aren't allowed to edit status"),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

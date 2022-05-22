@@ -99,6 +99,43 @@ class ApiService {
     }
   }
 
+  ///* Function made to fetch other tasks and their projects
+  Future<Map<int, List<Object>>> getOtherTasks(int userID) async {
+    String _token = _prefs.getData("token");
+
+    final response = await http.get(
+      Uri.parse(
+        kOtherTasks + userID.toString(),
+      ),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    List<Project> _projects = [];
+
+    if (response.statusCode == 200) {
+      List<Task> _tasks = decodeTasksFromJSON(response.body);
+      for (Task i in _tasks) {
+        Project x = await fetchProject(i.project);
+        _projects.add(x);
+      }
+
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+
+      return {
+        0: _tasks,
+        1: _projects,
+      };
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      print(response.reasonPhrase);
+      throw Exception('Failed to load other tasks');
+    }
+  }
+
   ///* Function made to fetch task members
   Future<List<User>> getTaskMembers(List members) async {
     List<String> _urls = members
@@ -139,8 +176,7 @@ class ApiService {
     List<Task> _list = [];
     try {
       for (String url in _urls) {
-        Task _singleTask 
-        = await fetchTask(url);
+        Task _singleTask = await fetchTask(url);
         _list.add(_singleTask);
       }
 
