@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, unnecessary_null_comparison
 
 import 'package:flutter/material.dart';
 import 'package:project/models/project.dart';
@@ -29,11 +29,18 @@ class _ProjectState extends State<SingleProjectView> {
 
     if (project.group.isNotEmpty) {
       Group group = await _api.fetchGroup(project.group);
-      List<User> _members = await _api.getGroupMembers(group.members);
-      return {
-        0: group,
-        1: _members,
-      };
+      if (group.members.isNotEmpty) {
+        List<User> _members = await _api.getGroupMembers(group.members);
+        return {
+          0: group,
+          1: _members,
+        };
+      } else {
+        return {
+          0: group,
+          1: List<User>.empty(),
+        };
+      }
     }
     return null;
   }
@@ -217,7 +224,7 @@ class _ProjectState extends State<SingleProjectView> {
                               ),
                             ),
                           ),
-                          _project.group.isEmpty
+                          group.members.isEmpty
                               ? NoGroupsWidget(
                                   project: _project,
                                 )
@@ -267,7 +274,11 @@ class _ProjectState extends State<SingleProjectView> {
                       ),
                     );
                   }
-
+                  // if (snapshot.data == null) {
+                  //   return Center(
+                  //     child: Text("null data"),
+                  //   );
+                  // }
                   return Center(
                     child: CircularProgressIndicator(),
                   );

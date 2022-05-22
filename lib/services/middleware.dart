@@ -265,9 +265,7 @@ class ApiService {
     String _token = _prefs.getData("token");
     final response = await http.post(
       Uri.parse(kProjectsUrl),
-      body: {
-        "title": name,
-      },
+      body: {"title": name, "group": ""},
       headers: {
         "Authorization": _token,
       },
@@ -276,6 +274,11 @@ class ApiService {
     if (response.statusCode == 201) {
       /// If the server did return a 200 OK response,
       /// then parse the JSON.
+      await createGroup(
+        "title",
+        List<String>.empty(),
+        Project.fromRawJson(response.body),
+      );
 
       return true;
     } else {

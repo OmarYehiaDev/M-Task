@@ -13,13 +13,14 @@ class ChangePass extends StatelessWidget {
           title: const Text(
             'Forget Password',
             style: TextStyle(
-                color: Colors.white,
-                fontSize: 25,
-                fontFamily: 'flu',
-                fontWeight: FontWeight.w700,
-                shadows: [
-                  Shadow(color: Color(0xa6A2B6D4), blurRadius: 20),
-                ]),
+              color: Colors.white,
+              fontSize: 25,
+              fontFamily: 'flu',
+              fontWeight: FontWeight.w700,
+              shadows: [
+                Shadow(color: Color(0xa6A2B6D4), blurRadius: 20),
+              ],
+            ),
           ),
           leading: IconButton(
             onPressed: () {
