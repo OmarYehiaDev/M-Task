@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: FutureBuilder<User>(
         future: _api.fetchUserData(),
-        builder: (context, snapshot) {
+        builder: (context_, snapshot) {
           if (snapshot.hasData) {
             final User _user = snapshot.data!;
             return Scaffold(
@@ -56,6 +56,38 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                actions: [
+                  PopupMenuButton<int>(
+                    onSelected: (int item) {
+                      switch (item) {
+                        case 0:
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => OtherTasks(user: _user),
+                            ),
+                          );
+                          break;
+                        case 1:
+                          ScaffoldMessenger.of(context_).setState(() {});
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem<int>(
+                        value: 0,
+                        child: Text("Other Tasks"),
+                      ),
+                      const PopupMenuDivider(
+                        height: 1,
+                      ),
+                      const PopupMenuItem<int>(
+                        value: 1,
+                        child: Text("Refresh"),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               body: SingleChildScrollView(
                 child: Column(
@@ -122,19 +154,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               drawer: DrawerWidget(),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => OtherTasks(user: _user),
-                    ),
-                  );
-                },
-                label: Text("Other Tasks"),
-              ),
             );
           } else if (snapshot.hasError) {
             return Text("Error Happened");
