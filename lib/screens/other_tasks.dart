@@ -34,8 +34,8 @@ class _OtherTasksState extends State<OtherTasks> {
 
     return Scaffold(
       key: _key,
-      body: FutureBuilder<Map<int, List<Object>>>(
-        future: _api.getOtherTasks(user.id),
+      body: StreamBuilder<Map<int, List<Object>>>(
+        stream: _api.getOtherTasks(user.id).asStream(),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
           if (snapshot.hasData &&
@@ -89,8 +89,8 @@ class _OtherTasksState extends State<OtherTasks> {
                 itemCount: tasks.length,
                 itemBuilder: (BuildContext context, int index) {
                   Task _task = tasks[index];
-                  return FutureBuilder<List<User>>(
-                    future: _api.getTaskMembers(_task.members),
+                  return StreamBuilder<List<User>>(
+                    stream: _api.getTaskMembers(_task.members).asStream(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) Text("Error Happened");
                       if (snapshot.hasData && snapshot.data!.isNotEmpty) {

@@ -42,16 +42,16 @@ class _MembersViewState extends State<MembersView> {
     final Group? group = widget.group;
     return Scaffold(
       key: _key,
-      body: FutureBuilder<Group>(
-        future: _api.fetchGroup(
+      body: StreamBuilder<Group>(
+        stream: _api.fetchGroup(
           group == null ? project.group : group.url,
-        ),
+        ).asStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
           if (snapshot.hasData) {
             final Group group = snapshot.data!;
-            return FutureBuilder<List<User>>(
-              future: _api.getGroupMembers(group.members),
+            return StreamBuilder<List<User>>(
+              stream: _api.getGroupMembers(group.members).asStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   Text("Error happened ${snapshot.error}");

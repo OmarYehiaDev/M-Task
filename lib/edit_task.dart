@@ -42,8 +42,8 @@ class _EditTask extends State<EditTask> {
     final Project _project = widget.project;
     final Task task = widget.task;
     return Scaffold(
-      body: FutureBuilder<Task>(
-        future: _api.fetchTask(task.url),
+      body: StreamBuilder<Task>(
+        stream: _api.fetchTask(task.url).asStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) Text("Error Happened");
           if (snapshot.hasData) {
@@ -186,15 +186,16 @@ class _EditTask extends State<EditTask> {
                       const Padding(
                         padding: EdgeInsets.only(top: 50),
                       ),
-                      FutureBuilder<Group>(
-                        future: _api.fetchGroup(_project.group),
+                      StreamBuilder<Group>(
+                        stream: _api.fetchGroup(_project.group).asStream(),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.hasError) Text("Error Happened");
                           if (snapshot.hasData) {
                             // Group group = snapshot.data!;
-                            return FutureBuilder<List<User>>(
-                              future: _api.getTaskMembers(task.members),
+                            return StreamBuilder<List<User>>(
+                              stream:
+                                  _api.getTaskMembers(task.members).asStream(),
                               builder: (context, snapshot2) {
                                 if (snapshot2.hasData) {
                                   final List<User> users = snapshot2.data!;

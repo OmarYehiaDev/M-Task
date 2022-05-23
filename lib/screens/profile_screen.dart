@@ -43,8 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      body: FutureBuilder<User>(
-        future: _api.fetchUserData(),
+      body: StreamBuilder<User>(
+        stream: _api.fetchUserData().asStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final User _user = snapshot.data!;

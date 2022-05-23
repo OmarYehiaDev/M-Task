@@ -37,10 +37,10 @@ class _ProjectsViewState extends State<ProjectsView> {
       shrinkWrap: true,
       itemCount: _projectsUrls.length,
       itemBuilder: (context, index) {
-        return FutureBuilder<Project>(
-          future: _api.fetchProject(
+        return StreamBuilder<Project>(
+          stream: _api.fetchProject(
             _projectsUrls[index],
-          ),
+          ).asStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final Project _project = snapshot.data!;

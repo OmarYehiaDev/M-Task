@@ -34,8 +34,8 @@ class _TasksViewState extends State<TasksView> {
 
     return Scaffold(
       key: _key,
-      body: FutureBuilder<List<Task>>(
-        future: _api.getTasks(_project.tasks),
+      body: StreamBuilder<List<Task>>(
+        stream: _api.getTasks(_project.tasks).asStream(),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
@@ -103,8 +103,8 @@ class _TasksViewState extends State<TasksView> {
                       itemCount: tasks.length,
                       itemBuilder: (BuildContext context, int index) {
                         Task _task = tasks[index];
-                        return FutureBuilder<List<User>>(
-                          future: _api.getTaskMembers(_task.members),
+                        return StreamBuilder<List<User>>(
+                          stream: _api.getTaskMembers(_task.members).asStream(),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) Text("Error Happened");
                             if (snapshot.hasData) {

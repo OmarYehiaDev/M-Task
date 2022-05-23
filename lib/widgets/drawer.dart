@@ -23,8 +23,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<User>(
-      future: _api.fetchUserData(),
+    return StreamBuilder<User>(
+      stream: _api.fetchUserData().asStream(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final User _user = snapshot.data!;
@@ -58,7 +58,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       },
                       progressIndicatorBuilder: (context, string, progress) {
                         return Text(
-                          ((progress.downloaded / progress.totalSize!) * 100)
+                          ((progress.downloaded / progress.totalSize!))
                                   .toString() +
                               "%",
                         );

@@ -44,14 +44,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _key,
-      body: FutureBuilder<Task>(
-        future: _api.fetchTask(widget.task.url),
+      body: StreamBuilder<Task>(
+        stream: _api.fetchTask(widget.task.url).asStream(),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error Happened");
           if (snapshot.hasData) {
             final Task task = snapshot.data!;
-            return FutureBuilder<User>(
-              future: _api.fetchUserData(),
+            return StreamBuilder<User>(
+              stream: _api.fetchUserData().asStream(),
               builder: (context, snapshot) {
                 onSelected(BuildContext context, int item) async {
                   switch (item) {

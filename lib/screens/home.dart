@@ -33,8 +33,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,
-      body: FutureBuilder<User>(
-        future: _api.fetchUserData(),
+      body: StreamBuilder<User>(
+        stream: _api.fetchUserData().asStream(),
         builder: (context_, snapshot) {
           if (snapshot.hasData) {
             final User _user = snapshot.data!;

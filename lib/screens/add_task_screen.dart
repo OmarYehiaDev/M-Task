@@ -240,14 +240,14 @@ class _AddTask extends State<AddTask> {
                   ],
                 ),
               ),
-              FutureBuilder<Group>(
-                future: _api.fetchGroup(_project.group),
+              StreamBuilder<Group>(
+                stream: _api.fetchGroup(_project.group).asStream(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasError) Text("Error Happened");
                   if (snapshot.hasData) {
                     Group group = snapshot.data!;
-                    return FutureBuilder<List<User>>(
-                      future: _api.getGroupMembers(group.members),
+                    return StreamBuilder<List<User>>(
+                      stream: _api.getGroupMembers(group.members).asStream(),
                       builder: (context, snapshot2) {
                         if (snapshot2.hasData) {
                           final List<User> users = snapshot2.data!;
