@@ -153,6 +153,45 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                     case 3:
                       ScaffoldMessenger.of(context_).setState(() {});
                       break;
+                    case 4:
+                      bool res = (await showDialog<bool>(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                              "Delete project",
+                            ),
+                            content: Text(
+                              "Are you sure about deleting ${task.title}?\n"
+                              "These changes can't be undone once you click on \"Yes\" button..",
+                            ),
+                            actions: [
+                              TextButton.icon(
+                                onPressed: () async {
+                                  bool res = await _api.deleteTask(task);
+                                  res
+                                      ? Navigator.pop(context, true)
+                                      : setState(() {});
+                                  res ? setState(() {}) : setState(() {});
+                                },
+                                icon: Icon(Icons.delete),
+                                label: Text("Yes"),
+                              ),
+                              TextButton.icon(
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                icon: Icon(Icons.arrow_back),
+                                label: Text("No"),
+                              ),
+                            ],
+                          );
+                        },
+                      ))!;
+                      res ? Navigator.pop(context) : setState(() {});
+                      res ? setState(() {}) : setState(() {});
+                      setState(() {});
+                      break;
                   }
                 }
 
@@ -193,6 +232,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                         height: 1,
                                       ),
                                       const PopupMenuItem<int>(
+                                        value: 4,
+                                        child: Text('Delete task'),
+                                      ),
+                                      const PopupMenuItem<int>(
                                         value: 3,
                                         child: Text("Refresh"),
                                       ),
@@ -207,6 +250,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                           ),
                                           const PopupMenuDivider(
                                             height: 1,
+                                          ),
+                                          const PopupMenuItem<int>(
+                                            value: 4,
+                                            child: Text('Delete task'),
                                           ),
                                           const PopupMenuItem<int>(
                                             value: 3,
@@ -245,7 +292,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                width: width - 50,
+                                width: width - 20,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

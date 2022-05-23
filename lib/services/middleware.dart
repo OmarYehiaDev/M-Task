@@ -311,6 +311,50 @@ class ApiService {
       throw Exception('Failed to delete project');
     }
   }
+  ///* Function made to delete tasks
+  Future<bool> deleteTask(Task task) async {
+    String _token = _prefs.getData("token");
+    final response = await http.delete(
+      Uri.parse(task.url),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 204) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+
+      return true;
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      print(response.reasonPhrase);
+      throw Exception('Failed to delete task');
+    }
+  }
+  ///* Function made to delete groups
+  Future<bool> deleteGroup(Group group) async {
+    String _token = _prefs.getData("token");
+    final response = await http.delete(
+      Uri.parse(group.url),
+      headers: {
+        "Authorization": _token,
+      },
+    );
+
+    if (response.statusCode == 204) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+
+      return true;
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      print(response.reasonPhrase);
+      throw Exception('Failed to delete group');
+    }
+  }
 
   ///* Function made to delete users
   Future<bool> deleteUser(User user) async {

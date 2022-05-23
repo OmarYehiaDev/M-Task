@@ -1,11 +1,15 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_literals_to_create_immutables, avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chips_input/flutter_chips_input.dart';
 import 'package:intl/intl.dart';
 import 'package:project/models/project.dart';
 import 'package:project/services/middleware.dart';
 
+import 'models/group.dart';
 import 'models/task.dart';
+import 'models/user.dart';
+import 'screens/AddMember.dart';
 // import 'package:project/screens/addWork_screen.dart';
 
 class EditTask extends StatefulWidget {
@@ -28,6 +32,10 @@ class _EditTask extends State<EditTask> {
   TextEditingController noteCon = TextEditingController();
   DateTime selectedStartDate = DateTime.now();
   DateTime selectedEndDate = DateTime.now();
+  final _chipKey = GlobalKey<ChipsInputState>();
+  List<User> members = [];
+
+  List<AppProfile> newMems = [];
 
   @override
   Widget build(BuildContext context) {
@@ -178,6 +186,155 @@ class _EditTask extends State<EditTask> {
                       const Padding(
                         padding: EdgeInsets.only(top: 50),
                       ),
+                      FutureBuilder<Group>(
+                        future: _api.fetchGroup(_project.group),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasError) Text("Error Happened");
+                          if (snapshot.hasData) {
+                            Group group = snapshot.data!;
+                            return FutureBuilder<List<User>>(
+                              future: _api.getTaskMembers(task.members),
+                              builder: (context, snapshot2) {
+                                if (snapshot2.hasData) {
+                                  final List<User> users = snapshot2.data!;
+                                  final List<AppProfile> usersProfiles =
+                                      List.generate(
+                                    users.length,
+                                    (i) => AppProfile(
+                                      users[i].firstName +
+                                          " " +
+                                          users[i].lastName,
+                                      users[i].username,
+                                      users[i].url,
+                                    ),
+                                  );
+                                  members.isEmpty
+                                      ? members = users
+                                      : members = members;
+
+                                  return Padding(
+                                    padding: EdgeInsets.all(20),
+                                    child: SingleChildScrollView(
+                                      child: ChipsInput<AppProfile>(
+                                        initialValue: members.isNotEmpty
+                                            ? members
+                                                .map(
+                                                  (e) => AppProfile(
+                                                    e.firstName +
+                                                        " " +
+                                                        e.lastName,
+                                                    e.username,
+                                                    e.url,
+                                                  ),
+                                                )
+                                                .toList()
+                                            : [],
+                                        key: _chipKey,
+                                        autofocus: true,
+                                        keyboardAppearance: Brightness.dark,
+                                        textCapitalization:
+                                            TextCapitalization.words,
+                                        textStyle: const TextStyle(
+                                          height: 1.5,
+                                          fontFamily: 'Roboto',
+                                          fontSize: 16,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          labelText: 'Select People',
+                                        ),
+                                        findSuggestions: (String query) {
+                                          if (query.isNotEmpty) {
+                                            var lowercaseQuery =
+                                                query.toLowerCase();
+                                            return usersProfiles.where(
+                                              (profile) {
+                                                return profile.name
+                                                        .toLowerCase()
+                                                        .contains(
+                                                          query.toLowerCase(),
+                                                        ) ||
+                                                    profile.email
+                                                        .toLowerCase()
+                                                        .contains(
+                                                          query.toLowerCase(),
+                                                        );
+                                              },
+                                            ).toList(
+                                              growable: false,
+                                            )..sort(
+                                                (a, b) => a.name
+                                                    .toLowerCase()
+                                                    .indexOf(
+                                                      lowercaseQuery,
+                                                    )
+                                                    .compareTo(
+                                                      b.name
+                                                          .toLowerCase()
+                                                          .indexOf(
+                                                            lowercaseQuery,
+                                                          ),
+                                                    ),
+                                              );
+                                          }
+                                          return usersProfiles;
+                                        },
+                                        onChanged: (data) {
+                                          newMems = data;
+                                        },
+                                        chipBuilder: (context, state, profile) {
+                                          return InputChip(
+                                            key: ObjectKey(profile),
+                                            label: Text(profile.name),
+                                            avatar: const Icon(
+                                              Icons.account_box_rounded,
+                                            ),
+                                            onDeleted: () {
+                                              state.deleteChip(
+                                                profile,
+                                              );
+                                              newMems.remove(profile);
+                                            },
+                                            materialTapTargetSize:
+                                                MaterialTapTargetSize
+                                                    .shrinkWrap,
+                                          );
+                                        },
+                                        suggestionBuilder:
+                                            (context, state, profile) {
+                                          return ListTile(
+                                            key: ObjectKey(profile),
+                                            leading: Icon(
+                                              Icons.account_box_rounded,
+                                            ),
+                                            title: Text(profile.name),
+                                            subtitle: Text(profile.email),
+                                            onTap: () {
+                                              state.selectSuggestion(
+                                                profile,
+                                              );
+                                              newMems.add(profile);
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Text("Error Happened");
+                                }
+
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                            );
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
@@ -271,7 +428,7 @@ class _EditTask extends State<EditTask> {
                                 end: selectedEndDate,
                                 desc: _taskNote,
                                 status: task.status,
-                                members: task.members,
+                                members: members,
                               );
                               if (_taskName.isNotEmpty &&
                                   _taskNote.isNotEmpty) {
@@ -303,7 +460,6 @@ class _EditTask extends State<EditTask> {
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              fixedSize: const Size(100, 50),
                               primary: const Color(0xff076792),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),

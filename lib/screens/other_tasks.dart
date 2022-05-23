@@ -164,8 +164,9 @@ class _OtherTasksState extends State<OtherTasks> {
                                           _task.title,
                                           style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 34,
+                                            fontSize: 30,
                                           ),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
                                     ),

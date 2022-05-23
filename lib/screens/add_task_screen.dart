@@ -248,9 +248,9 @@ class _AddTask extends State<AddTask> {
                     Group group = snapshot.data!;
                     return FutureBuilder<List<User>>(
                       future: _api.getGroupMembers(group.members),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          final List<User> users = snapshot.data!;
+                      builder: (context, snapshot2) {
+                        if (snapshot2.hasData) {
+                          final List<User> users = snapshot2.data!;
                           final List<AppProfile> usersProfiles = List.generate(
                             users.length,
                             (i) => AppProfile(
@@ -344,72 +344,6 @@ class _AddTask extends State<AddTask> {
                                   );
                                 },
                               ),
-
-                              // ElevatedButton(
-                              //   onPressed: () async {
-                              //     String title = nameCon.text;
-
-                              //     if (title.isNotEmpty) {
-                              //       Group group = await _api.createGroup(
-                              //         title,
-                              // newMems
-                              //     .map(
-                              //       (e) => e.url,
-                              //     )
-                              //     .toList(),
-                              //         project,
-                              //       );
-                              //       ScaffoldMessenger.of(context).showSnackBar(
-                              //         SnackBar(
-                              //           dismissDirection: DismissDirection.none,
-                              //           backgroundColor: Colors.green,
-                              //           content: Row(
-                              //             mainAxisAlignment:
-                              //                 MainAxisAlignment.spaceAround,
-                              //             children: [
-                              //               Text(
-                              //                 "Added successfully\n"
-                              //                 "Redirecting to Members Page",
-                              //               ),
-                              //               Padding(
-                              //                 padding: EdgeInsets.all(8),
-                              //                 child: CircularProgressIndicator(),
-                              //               ),
-                              //             ],
-                              //           ),
-                              //         ),
-                              //       );
-                              //       await Future.delayed(
-                              //         Duration(seconds: 4),
-                              //       );
-                              //       Navigator.push(
-                              //         context,
-                              //         MaterialPageRoute(
-                              //           builder: (_) => MembersView(
-                              //             project: project.copyWith(
-                              //               url: project.url,
-                              //               id: project.id,
-                              //               owner: project.owner,
-                              //               title: project.title,
-                              //               created: project.created,
-                              //               tasks: project.tasks,
-                              //               group: group.url,
-                              //             ),
-                              //             group: group,
-                              //           ),
-                              //         ),
-                              //       );
-                              //     } else {
-                              //       ScaffoldMessenger.of(context).showSnackBar(
-                              //         SnackBar(
-                              //           backgroundColor: Colors.red,
-                              //           content: Text("Enter Group name"),
-                              //         ),
-                              //       );
-                              //     }
-                              //   },
-                              //   child: Text('Add'),
-                              // ),
                             ),
                           );
                         } else if (snapshot.hasError) {
@@ -487,7 +421,6 @@ class _AddTask extends State<AddTask> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(100, 50),
                       primary: const Color(0xff076792),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),

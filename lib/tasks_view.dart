@@ -28,7 +28,7 @@ class _TasksViewState extends State<TasksView> {
         future: _api.getTasks(_project.tasks),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             List<Task> tasks = snapshot.data!;
             return Scaffold(
               backgroundColor: Colors.white,
@@ -266,6 +266,11 @@ class _TasksViewState extends State<TasksView> {
                   ),
                 ],
               ),
+            );
+          }
+          if (snapshot.hasData && snapshot.data!.isEmpty) {
+            return Center(
+              child: Text("No tasks"),
             );
           }
           return Center(

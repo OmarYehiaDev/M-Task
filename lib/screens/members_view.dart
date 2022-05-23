@@ -54,7 +54,7 @@ class _MembersViewState extends State<MembersView> {
                       ),
                       actions: [
                         PopupMenuButton<int>(
-                          onSelected: (int item) {
+                          onSelected: (int item) async {
                             switch (item) {
                               case 0:
                                 Navigator.push(
@@ -72,6 +72,49 @@ class _MembersViewState extends State<MembersView> {
                               case 1:
                                 setState(() {});
                                 break;
+                              case 2:
+                                bool res = (await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        "Delete group",
+                                      ),
+                                      content: Text(
+                                        "Are you sure about deleting ${group.title}?\n"
+                                        "These changes can't be undone once you click on \"Yes\" button..",
+                                      ),
+                                      actions: [
+                                        TextButton.icon(
+                                          onPressed: () async {
+                                            bool res =
+                                                await _api.deleteGroup(group);
+                                            res
+                                                ? Navigator.pop(context, true)
+                                                : setState(() {});
+                                            res
+                                                ? setState(() {})
+                                                : setState(() {});
+                                          },
+                                          icon: Icon(Icons.delete),
+                                          label: Text("Yes"),
+                                        ),
+                                        TextButton.icon(
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                          icon: Icon(Icons.arrow_back),
+                                          label: Text("No"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ))!;
+                                res ? Navigator.pop(context) : setState(() {});
+                                res ? setState(() {}) : setState(() {});
+                                setState(() {});
+
+                                break;
                             }
                           },
                           itemBuilder: (context) => current != null &&
@@ -83,6 +126,10 @@ class _MembersViewState extends State<MembersView> {
                                   ),
                                   const PopupMenuDivider(
                                     height: 1,
+                                  ),
+                                  const PopupMenuItem<int>(
+                                    value: 2,
+                                    child: Text("Delete group"),
                                   ),
                                   const PopupMenuItem<int>(
                                     value: 1,
