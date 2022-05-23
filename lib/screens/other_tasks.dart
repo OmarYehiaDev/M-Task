@@ -28,7 +28,9 @@ class _OtherTasksState extends State<OtherTasks> {
         future: _api.getOtherTasks(user.id),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
-          if (snapshot.hasData) {
+          if (snapshot.hasData &&
+              snapshot.data![0]!.isNotEmpty &&
+              snapshot.data![1]!.isNotEmpty) {
             Map<int, List<Object>> data = snapshot.data!;
             List<Task> tasks = data[0] as List<Task>;
             List<Project> projects = data[1] as List<Project>;
@@ -81,7 +83,7 @@ class _OtherTasksState extends State<OtherTasks> {
                     future: _api.getTaskMembers(_task.members),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) Text("Error Happened");
-                      if (snapshot.hasData) {
+                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                         List<User> members = snapshot.data!;
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(
@@ -233,6 +235,10 @@ class _OtherTasksState extends State<OtherTasks> {
                             ),
                           ),
                         );
+                      } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                        return Center(
+                          child: Text("You have no other tasks"),
+                        );
                       }
                       return Center(
                         child: CircularProgressIndicator(),
@@ -241,6 +247,12 @@ class _OtherTasksState extends State<OtherTasks> {
                   );
                 },
               ),
+            );
+          } else if (snapshot.hasData &&
+              snapshot.data![0]!.isEmpty &&
+              snapshot.data![1]!.isEmpty) {
+            return Center(
+              child: Text("You have no tasks"),
             );
           }
           return Center(
