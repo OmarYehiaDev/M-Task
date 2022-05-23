@@ -26,6 +26,15 @@ class SingleTaskView extends StatefulWidget {
 
 class _SingleTaskViewState extends State<SingleTaskView> {
   final ApiService _api = ApiService();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +43,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     // double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: _key,
       body: FutureBuilder<Task>(
         future: _api.fetchTask(widget.task.url),
         builder: (context_, snapshot) {
@@ -128,10 +138,11 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                       ScaffoldMessenger.of(context_).setState(() {});
                       break;
                     case 2:
-                      bool res = (await Navigator.of(context_).push(
+                      bool res =
+                          (await Navigator.of(_key.currentState!.context).push(
                         MaterialPageRoute(
                           fullscreenDialog: true,
-                          builder: (context_) => EditTask(
+                          builder: (_) => EditTask(
                             project: widget.project,
                             task: task,
                           ),
@@ -151,7 +162,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                       ScaffoldMessenger.of(context_).setState(() {});
                       break;
                     case 3:
-                      ScaffoldMessenger.of(context_).setState(() {});
+                      rebuildAllChildren(_key.currentState!.context);
                       break;
                     case 4:
                       bool res = (await showDialog<bool>(

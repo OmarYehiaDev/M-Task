@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'dart:convert';
+// import 'dart:io';
 
+// import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:project/helpers/constants.dart';
 import 'package:project/services/sharedPrefs.dart';
@@ -11,6 +13,7 @@ import '../models/user.dart';
 import '../models/task.dart';
 import '../models/group.dart';
 import 'package:http/http.dart' as http;
+// import 'package:http_parser/http_parser.dart' as parser;
 
 ///* API Service for handling middleware
 class ApiService {
@@ -166,6 +169,41 @@ class ApiService {
     }
   }
 
+  // ///* Function made to upload user's p.p
+  // Future<String> uploadUserPic(File file, User user) async {
+  //   var postUri = Uri.parse(kProfile);
+  //   http.MultipartRequest request = http.MultipartRequest("POST", postUri);
+  //   request.fields['user'] = 'blah';
+  //   request.files.add(
+  //     http.MultipartFile.fromBytes(
+  //       'file',
+  //       await File.fromUri(Uri.parse(file.path)).readAsBytes(),
+  //       contentType: parser.MediaType('image', 'jpeg'),
+  //     ),
+  //   );
+
+  //   request.send().then((response) {
+  //     if (response.statusCode == 200) print("Uploaded!");
+  //   });
+  // }
+
+  // ///* Function made to delete user's p.p
+  // Future<bool> deleteUserPic(String url) async {
+  //   final cloudinary = Cloudinary.basic(
+  //     cloudName: "esoorappdb",
+  //   );
+  //   final response = await cloudinary.deleteResource(
+  //     url: url,
+  //     resourceType: CloudinaryResourceType.image,
+  //     invalidate: false,
+  //   );
+  //   if (response.isSuccessful) {
+  //     return true;
+  //   } else {
+  //     throw Exception("We cam't delete the pic");
+  //   }
+  // }
+
   ///* Function made to fetch tasks
   Future<List<Task>> getTasks(List tasks) async {
     List<String> _urls = tasks
@@ -311,6 +349,7 @@ class ApiService {
       throw Exception('Failed to delete project');
     }
   }
+
   ///* Function made to delete tasks
   Future<bool> deleteTask(Task task) async {
     String _token = _prefs.getData("token");
@@ -333,6 +372,7 @@ class ApiService {
       throw Exception('Failed to delete task');
     }
   }
+
   ///* Function made to delete groups
   Future<bool> deleteGroup(Group group) async {
     String _token = _prefs.getData("token");

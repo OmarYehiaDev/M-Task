@@ -19,9 +19,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ApiService _api = ApiService();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       body: FutureBuilder<User>(
         future: _api.fetchUserData(),
         builder: (context_, snapshot) {
@@ -69,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                           );
                           break;
                         case 1:
-                          ScaffoldMessenger.of(context_).setState(() {});
+                          rebuildAllChildren(_key.currentState!.context);
                           break;
                       }
                     },

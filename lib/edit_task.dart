@@ -192,7 +192,7 @@ class _EditTask extends State<EditTask> {
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.hasError) Text("Error Happened");
                           if (snapshot.hasData) {
-                            Group group = snapshot.data!;
+                            // Group group = snapshot.data!;
                             return FutureBuilder<List<User>>(
                               future: _api.getTaskMembers(task.members),
                               builder: (context, snapshot2) {

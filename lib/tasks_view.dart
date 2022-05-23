@@ -18,12 +18,22 @@ class TasksView extends StatefulWidget {
 
 class _TasksViewState extends State<TasksView> {
   final ApiService _api = ApiService();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
 
   @override
   Widget build(BuildContext context) {
     final Project _project = widget.project;
 
     return Scaffold(
+      key: _key,
       body: FutureBuilder<List<Task>>(
         future: _api.getTasks(_project.tasks),
         builder: (context_, snapshot) {
@@ -63,7 +73,7 @@ class _TasksViewState extends State<TasksView> {
                 actions: [
                   IconButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context_).setState(() {});
+                      rebuildAllChildren(_key.currentState!.context);
                     },
                     icon: Icon(Icons.refresh),
                   ),

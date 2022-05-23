@@ -25,12 +25,23 @@ class MembersView extends StatefulWidget {
 
 class _MembersViewState extends State<MembersView> {
   final ApiService _api = ApiService();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Project project = widget.project;
     final User? current = widget.current;
     final Group? group = widget.group;
     return Scaffold(
+      key: _key,
       body: FutureBuilder<Group>(
         future: _api.fetchGroup(
           group == null ? project.group : group.url,
@@ -70,7 +81,7 @@ class _MembersViewState extends State<MembersView> {
                                 );
                                 break;
                               case 1:
-                                setState(() {});
+                                rebuildAllChildren(_key.currentState!.context);
                                 break;
                               case 2:
                                 bool res = (await showDialog<bool>(

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user.dart';
@@ -47,8 +48,22 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                     _user.email,
                   ),
                   currentAccountPicture: CircleAvatar(
-                    backgroundImage: AssetImage('assets/images/image.png'),
                     backgroundColor: Colors.white,
+                    child: CachedNetworkImage(
+                      imageUrl: "https://res.cloudinary.com/esoorappdb/"
+                          "image/upload/v1653291462/users/"
+                          "${_user.username}/picture.jpg",
+                      errorWidget: (context, string, object) {
+                        return Image.asset("assets/images/image.png");
+                      },
+                      progressIndicatorBuilder: (context, string, progress) {
+                        return Text(
+                          ((progress.downloaded / progress.totalSize!) * 100)
+                                  .toString() +
+                              "%",
+                        );
+                      },
+                    ),
                   ),
                 ),
                 ListTile(

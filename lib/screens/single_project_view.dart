@@ -24,6 +24,16 @@ class SingleProjectView extends StatefulWidget {
 class _ProjectState extends State<SingleProjectView> {
   List<User>? members;
   final ApiService _api = ApiService();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   Future<Map<int, Object>?> fetchMems() async {
     final Project project = widget.project;
 
@@ -50,6 +60,7 @@ class _ProjectState extends State<SingleProjectView> {
     final Project _project = widget.project;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
+      key: _key,
       body: FutureBuilder<User>(
         future: _api.fetchUserData(),
         builder: (context_, snapshot) {
@@ -133,7 +144,8 @@ class _ProjectState extends State<SingleProjectView> {
                           setState(() {});
                           break;
                         case 3:
-                          ScaffoldMessenger.of(context_).setState(() {});
+                          rebuildAllChildren(_key.currentState!.context);
+
                           break;
                       }
                     }

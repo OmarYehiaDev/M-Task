@@ -39,3 +39,6 @@ String kLinked = "assets/images/linkedin.png";
 
 /// Other tasks
 String kOtherTasks = kTasksUrl + "?owner=&members=";
+
+/// User's profile
+String kProfile = kBaseURL + "profile/";

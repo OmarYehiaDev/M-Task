@@ -18,12 +18,22 @@ class OtherTasks extends StatefulWidget {
 
 class _OtherTasksState extends State<OtherTasks> {
   final ApiService _api = ApiService();
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
 
   @override
   Widget build(BuildContext context) {
     final User user = widget.user;
 
     return Scaffold(
+      key: _key,
       body: FutureBuilder<Map<int, List<Object>>>(
         future: _api.getOtherTasks(user.id),
         builder: (context_, snapshot) {
@@ -68,7 +78,7 @@ class _OtherTasksState extends State<OtherTasks> {
                 actions: [
                   IconButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context_).setState(() {});
+                      rebuildAllChildren(_key.currentState!.context);
                     },
                     icon: Icon(Icons.refresh),
                   ),
