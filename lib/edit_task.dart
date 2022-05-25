@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:project/models/project.dart';
 import 'package:project/services/middleware.dart';
 
-import 'models/group.dart';
 import 'models/task.dart';
 import 'models/user.dart';
 import 'screens/AddMember.dart';
@@ -42,8 +41,8 @@ class _EditTask extends State<EditTask> {
     final Project _project = widget.project;
     final Task task = widget.task;
     return Scaffold(
-      body: StreamBuilder<Task>(
-        stream: _api.fetchTask(task.url).asStream(),
+      body: FutureBuilder<Task>(
+        future: _api.fetchTask(task.url),
         builder: (context, snapshot) {
           if (snapshot.hasError) Text("Error Happened");
           if (snapshot.hasData) {
@@ -186,149 +185,149 @@ class _EditTask extends State<EditTask> {
                       const Padding(
                         padding: EdgeInsets.only(top: 50),
                       ),
-                      StreamBuilder<Group>(
-                        stream: _api.fetchGroup(_project.group).asStream(),
+                      FutureBuilder<List<User>>(
+                        future: _api.getUsers(),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.hasError) Text("Error Happened");
                           if (snapshot.hasData) {
-                            // Group group = snapshot.data!;
-                            return StreamBuilder<List<User>>(
-                              stream:
-                                  _api.getTaskMembers(task.members).asStream(),
-                              builder: (context, snapshot2) {
-                                if (snapshot2.hasData) {
-                                  final List<User> users = snapshot2.data!;
-                                  final List<AppProfile> usersProfiles =
-                                      List.generate(
-                                    users.length,
-                                    (i) => AppProfile(
-                                      users[i].firstName +
-                                          " " +
-                                          users[i].lastName,
-                                      users[i].username,
-                                      users[i].url,
-                                    ),
-                                  );
-                                  members.isEmpty
-                                      ? members = users
-                                      : members = members;
-
-                                  return Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: SingleChildScrollView(
-                                      child: ChipsInput<AppProfile>(
-                                        initialValue: members.isNotEmpty
-                                            ? members
-                                                .map(
-                                                  (e) => AppProfile(
-                                                    e.firstName +
-                                                        " " +
-                                                        e.lastName,
-                                                    e.username,
-                                                    e.url,
-                                                  ),
-                                                )
-                                                .toList()
-                                            : [],
-                                        key: _chipKey,
-                                        autofocus: true,
-                                        keyboardAppearance: Brightness.dark,
-                                        textCapitalization:
-                                            TextCapitalization.words,
-                                        textStyle: const TextStyle(
-                                          height: 1.5,
-                                          fontFamily: 'Roboto',
-                                          fontSize: 16,
-                                        ),
-                                        decoration: const InputDecoration(
-                                          labelText: 'Select People',
-                                        ),
-                                        findSuggestions: (String query) {
-                                          if (query.isNotEmpty) {
-                                            var lowercaseQuery =
-                                                query.toLowerCase();
-                                            return usersProfiles.where(
-                                              (profile) {
-                                                return profile.name
-                                                        .toLowerCase()
-                                                        .contains(
-                                                          query.toLowerCase(),
-                                                        ) ||
-                                                    profile.email
-                                                        .toLowerCase()
-                                                        .contains(
-                                                          query.toLowerCase(),
-                                                        );
-                                              },
-                                            ).toList(
-                                              growable: false,
-                                            )..sort(
-                                                (a, b) => a.name
-                                                    .toLowerCase()
-                                                    .indexOf(
-                                                      lowercaseQuery,
-                                                    )
-                                                    .compareTo(
-                                                      b.name
-                                                          .toLowerCase()
-                                                          .indexOf(
-                                                            lowercaseQuery,
-                                                          ),
-                                                    ),
-                                              );
-                                          }
-                                          return usersProfiles;
-                                        },
-                                        onChanged: (data) {
-                                          newMems = data;
-                                        },
-                                        chipBuilder: (context, state, profile) {
-                                          return InputChip(
-                                            key: ObjectKey(profile),
-                                            label: Text(profile.name),
-                                            avatar: const Icon(
-                                              Icons.account_box_rounded,
-                                            ),
-                                            onDeleted: () {
-                                              state.deleteChip(
-                                                profile,
-                                              );
-                                              newMems.remove(profile);
-                                            },
-                                            materialTapTargetSize:
-                                                MaterialTapTargetSize
-                                                    .shrinkWrap,
-                                          );
-                                        },
-                                        suggestionBuilder:
-                                            (context, state, profile) {
-                                          return ListTile(
-                                            key: ObjectKey(profile),
-                                            leading: Icon(
-                                              Icons.account_box_rounded,
-                                            ),
-                                            title: Text(profile.name),
-                                            subtitle: Text(profile.email),
-                                            onTap: () {
-                                              state.selectSuggestion(
-                                                profile,
-                                              );
-                                              newMems.add(profile);
-                                            },
-                                          );
-                                        },
+                            final List<User> allUsers = snapshot.data!;
+                            return SizedBox(
+                              child: FutureBuilder<List<User>>(
+                                future: _api.getTaskMembers(task.members),
+                                builder: (context, snapshot2) {
+                                  if (snapshot2.hasData) {
+                                    final List<User> users = allUsers;
+                                    final List<AppProfile> usersProfiles =
+                                        List.generate(
+                                      users.length,
+                                      (i) => AppProfile(
+                                        users[i].firstName +
+                                            " " +
+                                            users[i].lastName,
+                                        users[i].username,
+                                        users[i].url,
                                       ),
-                                    ),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Text("Error Happened");
-                                }
+                                    );
+                                    members = snapshot2.data!;
 
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              },
+                                    return Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: SingleChildScrollView(
+                                        child: ChipsInput<AppProfile>(
+                                          initialValue: members.isNotEmpty
+                                              ? members
+                                                  .map(
+                                                    (e) => AppProfile(
+                                                      e.firstName +
+                                                          " " +
+                                                          e.lastName,
+                                                      e.username,
+                                                      e.url,
+                                                    ),
+                                                  )
+                                                  .toList()
+                                              : [],
+                                          key: _chipKey,
+                                          autofocus: true,
+                                          keyboardAppearance: Brightness.dark,
+                                          textCapitalization:
+                                              TextCapitalization.words,
+                                          textStyle: const TextStyle(
+                                            height: 1.5,
+                                            fontFamily: 'Roboto',
+                                            fontSize: 16,
+                                          ),
+                                          decoration: const InputDecoration(
+                                            labelText: 'Select People',
+                                          ),
+                                          findSuggestions: (String query) {
+                                            if (query.isNotEmpty) {
+                                              var lowercaseQuery =
+                                                  query.toLowerCase();
+                                              return usersProfiles.where(
+                                                (profile) {
+                                                  return profile.name
+                                                          .toLowerCase()
+                                                          .contains(
+                                                            query.toLowerCase(),
+                                                          ) ||
+                                                      profile.email
+                                                          .toLowerCase()
+                                                          .contains(
+                                                            query.toLowerCase(),
+                                                          );
+                                                },
+                                              ).toList(
+                                                growable: false,
+                                              )..sort(
+                                                  (a, b) => a.name
+                                                      .toLowerCase()
+                                                      .indexOf(
+                                                        lowercaseQuery,
+                                                      )
+                                                      .compareTo(
+                                                        b.name
+                                                            .toLowerCase()
+                                                            .indexOf(
+                                                              lowercaseQuery,
+                                                            ),
+                                                      ),
+                                                );
+                                            }
+                                            return usersProfiles;
+                                          },
+                                          onChanged: (data) {
+                                            newMems = data;
+                                          },
+                                          chipBuilder:
+                                              (context, state, profile) {
+                                            return InputChip(
+                                              key: ObjectKey(profile),
+                                              label: Text(profile.name),
+                                              avatar: const Icon(
+                                                Icons.account_box_rounded,
+                                              ),
+                                              onDeleted: () {
+                                                state.deleteChip(
+                                                  profile,
+                                                );
+                                                newMems.remove(profile);
+                                              },
+                                              materialTapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                            );
+                                          },
+                                          suggestionBuilder:
+                                              (context, state, profile) {
+                                            return ListTile(
+                                              key: ObjectKey(profile),
+                                              leading: Icon(
+                                                Icons.account_box_rounded,
+                                              ),
+                                              title: Text(profile.name),
+                                              subtitle: Text(profile.email),
+                                              onTap: () {
+                                                state.selectSuggestion(
+                                                  profile,
+                                                );
+                                                newMems.add(profile);
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Text("Error Happened");
+                                  }
+
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              ),
                             );
                           }
                           return Center(

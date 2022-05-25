@@ -139,7 +139,7 @@ class _ProjectState extends State<SingleProjectView> {
                               );
                             },
                           ))!;
-                          res ? Navigator.pop(context) : setState(() {});
+                          res ? Navigator.pop(context, true) : setState(() {});
                           res ? setState(() {}) : setState(() {});
                           setState(() {});
                           break;

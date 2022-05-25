@@ -38,9 +38,11 @@ class _ProjectsViewState extends State<ProjectsView> {
       itemCount: _projectsUrls.length,
       itemBuilder: (context, index) {
         return StreamBuilder<Project>(
-          stream: _api.fetchProject(
-            _projectsUrls[index],
-          ).asStream(),
+          stream: _api
+              .fetchProject(
+                _projectsUrls[index],
+              )
+              .asStream(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final Project _project = snapshot.data!;
@@ -48,14 +50,19 @@ class _ProjectsViewState extends State<ProjectsView> {
                 padding: const EdgeInsets.fromLTRB(28, 12, 28, 0),
                 child: GestureDetector(
                   onTap: () async {
-                    Navigator.push(
+                    bool delete = (await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => SingleProjectView(
                           project: _project,
                         ),
                       ),
-                    );
+                    ))!;
+                    if (delete) {
+                      _projectsUrls.remove(
+                        _projectsUrls[index],
+                      );
+                    }
                   },
                   child: Card(
                     child: Container(
