@@ -65,8 +65,8 @@ class _AddMemberState extends State<AddMember> {
         ),
       ),
       resizeToAvoidBottomInset: false,
-      body: StreamBuilder<List<User>>(
-        stream: _api.getUsers().asStream(),
+      body: FutureBuilder<List<User>>(
+        future: _api.getUsers(),
         builder: (context, snapshot) {
           final List<User>? members = widget.members;
           if (group != null) nameCon.text = group.title;

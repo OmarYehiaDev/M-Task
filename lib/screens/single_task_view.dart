@@ -26,6 +26,11 @@ class SingleTaskView extends StatefulWidget {
 
 class _SingleTaskViewState extends State<SingleTaskView> {
   final ApiService _api = ApiService();
+  final TextEditingController _title = TextEditingController();
+  final TextEditingController _desc = TextEditingController();
+  final TextEditingController _status = TextEditingController();
+  final TextEditingController _endTime = TextEditingController();
+  final TextEditingController _startTime = TextEditingController();
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
@@ -209,6 +214,11 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                 if (snapshot.hasError) Text("Error Happened");
                 if (snapshot.hasData) {
                   User user = snapshot.data!;
+                  _startTime.text = Jiffy(task.start).fromNow();
+                  _endTime.text = Jiffy(task.end).fromNow();
+                  _title.text = task.title;
+                  _desc.text = task.desc;
+                  _status.text = task.status;
                   return Scaffold(
                     appBar: AppBar(
                       title: Text(task.title),
@@ -302,27 +312,78 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   mainAxisSize: MainAxisSize.max,
+                              //   children: [
+                              //     // Card(
+                              //     //   color: Colors.blue,
+                              //     //   child: Padding(
+                              //     //     padding: const EdgeInsets.all(8.0),
+                              //     //     child:
+                              //     //         Text("Task status: " + task.status),
+                              //     //   ),
+                              //     // ),
+                              //   ],
+                              // ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32.0,
+                                  vertical: 16,
+                                ),
+                                child: TextField(
+                                  controller: _title,
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    label: Text("Task Title"),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32.0,
+                                  vertical: 16,
+                                ),
+                                child: TextField(
+                                  controller: _status,
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    label: Text("Task Status"),
+                                  ),
+                                ),
+                              ),
                               SizedBox(
-                                width: width - 20,
+                                width: width - 50,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Card(
-                                      color: Colors.blue,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child:
-                                            Text("Task title: " + task.title),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: width * 0.3,
+                                        child: TextField(
+                                          controller: _startTime,
+                                          readOnly: true,
+                                          decoration: InputDecoration(
+                                            label: Text("Starts"),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                    Card(
-                                      color: Colors.blue,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child:
-                                            Text("Task status: " + task.status),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: width * 0.3,
+                                        child: TextField(
+                                          controller: _endTime,
+                                          readOnly: true,
+                                          decoration: InputDecoration(
+                                            label: Text("Ends"),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -330,61 +391,44 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               ),
                               Align(
                                 alignment: AlignmentDirectional.center,
-                                child: Card(
-                                  color: Colors.blue,
-                                  child: SizedBox(
-                                    width: width * 0.8,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(32.0),
-                                      child: Text("Description: " + task.desc),
+                                child: SizedBox(
+                                  width: width * 0.82,
+                                  child: TextField(
+                                    controller: _desc,
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      label: Text("Task Description"),
                                     ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: width - 50,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Card(
-                                        color: Colors.blue,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "Starts " +
-                                                Jiffy(task.start).fromNow(),
-                                          ),
-                                        ),
-                                      ),
-                                      Card(
-                                        color: Colors.blue,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "Ends " + Jiffy(task.end).fromNow(),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
                                   ),
                                 ),
                               ),
                               Align(
                                 alignment: AlignmentDirectional.center,
-                                child: Card(
-                                  color: Colors.blue,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(32.0),
-                                    child: Text(
-                                      "Assigned to: " +
-                                          editors
-                                              .map((e) => e.username)
-                                              .toList()
-                                              .join(" - "),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: ListTile(
+                                    title: Text(
+                                      "Assigned to:",
+                                      style: Theme.of(context)
+                                          .inputDecorationTheme
+                                          .floatingLabelStyle,
+                                    ),
+                                    isThreeLine: true,
+                                    subtitle: Wrap(
+                                      direction: Axis.horizontal,
+                                      children: editors
+                                          .map(
+                                            (e) => Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 2.0,
+                                              ),
+                                              child: Chip(
+                                                label: Text(e.username),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                     ),
                                   ),
                                 ),
@@ -396,9 +440,12 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                   child: editors
                                           .map((e) => e.username)
                                           .contains(user.username)
-                                      ? Text("You're allowed to edit status")
+                                      ? Text(
+                                          "You're allowed to edit status",
+                                        )
                                       : Text(
-                                          "You aren't allowed to edit status"),
+                                          "You aren't allowed to edit status",
+                                        ),
                                 ),
                               ),
                             ],

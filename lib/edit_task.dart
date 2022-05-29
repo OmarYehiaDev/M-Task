@@ -428,7 +428,11 @@ class _EditTask extends State<EditTask> {
                                 end: selectedEndDate,
                                 desc: _taskNote,
                                 status: task.status,
-                                members: members,
+                                members: newMems
+                                    .map(
+                                      (e) => e.url,
+                                    )
+                                    .toList(),
                               );
                               if (_taskName.isNotEmpty &&
                                   _taskNote.isNotEmpty) {
