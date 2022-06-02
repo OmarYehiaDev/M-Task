@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:project/models/project.dart';
 import 'package:project/screens/members_view.dart';
 import 'package:project/services/middleware.dart';
-import 'package:project/widgets/empty_groups.dart';
+// import 'package:project/widgets/empty_groups.dart';
 import '../models/group.dart';
 import '../models/user.dart';
 import '../tasks_view.dart';
-import '../widgets/empty_tasks.dart';
+// import '../widgets/empty_tasks.dart';
 import 'AddMember.dart';
 import 'add_task_screen.dart';
 
@@ -58,7 +58,7 @@ class _ProjectState extends State<SingleProjectView> {
   @override
   Widget build(BuildContext context) {
     final Project _project = widget.project;
-    double width = MediaQuery.of(context).size.width;
+    // double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _key,
       body: StreamBuilder<User>(
