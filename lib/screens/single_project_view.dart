@@ -147,6 +147,19 @@ class _ProjectState extends State<SingleProjectView> {
                           rebuildAllChildren(_key.currentState!.context);
 
                           break;
+                        case 4:
+                          group.members.isNotEmpty
+                              ? Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => MembersView(
+                                      project: _project,
+                                      current: current,
+                                    ),
+                                  ),
+                                )
+                              : () {};
+                          break;
                       }
                     }
 
@@ -203,6 +216,15 @@ class _ProjectState extends State<SingleProjectView> {
                                           value: 3,
                                           child: Text('Refresh'),
                                         ),
+                                        const PopupMenuDivider(
+                                          height: 1,
+                                        ),
+                                        PopupMenuItem<int>(
+                                          value: 4,
+                                          child: group.members.isEmpty
+                                              ? Text("There're no group yet")
+                                              : Text("View group"),
+                                        ),
                                       ]
                                     : [
                                         const PopupMenuItem<int>(
@@ -211,6 +233,12 @@ class _ProjectState extends State<SingleProjectView> {
                                         ),
                                         const PopupMenuDivider(
                                           height: 1,
+                                        ),
+                                        PopupMenuItem<int>(
+                                          value: 4,
+                                          child: group.members.isEmpty
+                                              ? Text("There're no group yet")
+                                              : Text("View group"),
                                         ),
                                       ],
                           ),
@@ -221,76 +249,73 @@ class _ProjectState extends State<SingleProjectView> {
                           },
                         ),
                       ),
-                      body: ListView(
-                        children: [
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text(
-                                _project.title,
-                                style: TextStyle(
-                                  fontSize: 40.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff076792),
-                                ),
-                              ),
-                            ),
-                          ),
-                          group.members.isEmpty
-                              ? NoGroupsWidget(
-                                  project: _project,
-                                )
-                              : Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: width * 0.25),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => MembersView(
-                                            project: _project,
-                                            current: current,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Text("View group"),
-                                  ),
-                                ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                          _project.tasks.isEmpty
-                              ? NoTasksWidget(
-                                  project: _project,
-                                )
-                              : Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: width * 0.25),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => TasksView(
-                                            project: _project,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Text("View tasks"),
-                                  ),
-                                ),
-                        ],
-                      ),
+                      body: TasksView(project: _project),
+                      // ListView(
+                      //   children: [
+                      //     Center(
+                      //       child: Padding(
+                      //         padding: EdgeInsets.all(20.0),
+                      //         child: Text(
+                      //           _project.title,
+                      //           style: TextStyle(
+                      //             fontSize: 40.0,
+                      //             fontWeight: FontWeight.bold,
+                      //             color: Color(0xff076792),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      // group.members.isEmpty
+                      //     ? NoGroupsWidget(
+                      //         project: _project,
+                      //       )
+                      //     : Container(
+                      //         margin: EdgeInsets.symmetric(
+                      //             horizontal: width * 0.25),
+                      //         child: ElevatedButton(
+                      //           onPressed: () {
+                      //             Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                 builder: (_) => MembersView(
+                      //                   project: _project,
+                      //                   current: current,
+                      //                 ),
+                      //               ),
+                      //             );
+                      //           },
+                      //           child: Text("View group"),
+                      //         ),
+                      //       ),
+                      //     SizedBox(
+                      //       height: 50,
+                      //     ),
+                      //     _project.tasks.isEmpty
+                      //         ? NoTasksWidget(
+                      //             project: _project,
+                      //           )
+                      //         : Container(
+                      //             margin: EdgeInsets.symmetric(
+                      //                 horizontal: width * 0.25),
+                      //             child: ElevatedButton(
+                      //               onPressed: () {
+                      //                 Navigator.push(
+                      //                   context,
+                      //                   MaterialPageRoute(
+                      //                     builder: (_) => TasksView(
+                      //                       project: _project,
+                      //                     ),
+                      //                   ),
+                      //                 );
+                      //               },
+                      //               child: Text("View tasks"),
+                      //             ),
+                      //           ),
+                      //   ],
+                      // ),
                     );
                   }
-                  // if (snapshot.data == null) {
-                  //   return Center(
-                  //     child: Text("null data"),
-                  //   );
-                  // }
+
                   return Center(
                     child: CircularProgressIndicator(),
                   );

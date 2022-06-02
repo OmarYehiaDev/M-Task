@@ -41,44 +41,44 @@ class _TasksViewState extends State<TasksView> {
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             List<Task> tasks = snapshot.data!;
             return Scaffold(
-              backgroundColor: Colors.white,
-              appBar: AppBar(
-                elevation: 0,
-                bottom: PreferredSize(
-                  child: Container(
-                    color: const Color(0xff94adb4),
-                    height: 2,
-                    width: 320,
-                  ),
-                  preferredSize: const Size.fromHeight(4.0),
-                ),
-                centerTitle: true,
-                backgroundColor: const Color(0xff076792),
-                title: Text(
-                  _project.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w700,
-                    shadows: [
-                      Shadow(color: Color(0xa6A2B6D4), blurRadius: 20),
-                    ],
-                  ),
-                ),
-                leading: BackButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      rebuildAllChildren(_key.currentState!.context);
-                    },
-                    icon: Icon(Icons.refresh),
-                  ),
-                ],
-              ),
+              // backgroundColor: Colors.white,
+              // appBar: AppBar(
+              //   elevation: 0,
+              //   bottom: PreferredSize(
+              //     child: Container(
+              //       color: const Color(0xff94adb4),
+              //       height: 2,
+              //       width: 320,
+              //     ),
+              //     preferredSize: const Size.fromHeight(4.0),
+              //   ),
+              //   centerTitle: true,
+              //   backgroundColor: const Color(0xff076792),
+              //   title: Text(
+              //     _project.title,
+              //     style: const TextStyle(
+              //       color: Colors.white,
+              //       fontSize: 35,
+              //       fontWeight: FontWeight.w700,
+              //       shadows: [
+              //         Shadow(color: Color(0xa6A2B6D4), blurRadius: 20),
+              //       ],
+              //     ),
+              //   ),
+              //   leading: BackButton(
+              //     onPressed: () {
+              //       Navigator.pop(context);
+              //     },
+              //   ),
+              //   actions: [
+              //     IconButton(
+              //       onPressed: () {
+              //         rebuildAllChildren(_key.currentState!.context);
+              //       },
+              //       icon: Icon(Icons.refresh),
+              //     ),
+              //   ],
+              // ),
               body: Column(
                 children: [
                   Center(
