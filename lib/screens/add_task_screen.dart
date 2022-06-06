@@ -400,28 +400,28 @@ class _AddTask extends State<AddTask> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   Text(
-                                    "Added task successfully\n"
-                                    "Redirecting to tasks Page",
+                                    "Added task successfully\n",
+                                    // "Redirecting to tasks Page",
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: CircularProgressIndicator(),
-                                  ),
+                                  // Padding(
+                                  //   padding: EdgeInsets.all(8),
+                                  //   child: CircularProgressIndicator(),
+                                  // ),
                                 ],
                               ),
                             ),
                           );
-                          await Future.delayed(
-                            Duration(seconds: 4),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => TasksView(
-                                project: _project,
-                              ),
-                            ),
-                          );
+                          // await Future.delayed(
+                          //   Duration(seconds: 4),
+                          // );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) => TasksView(
+                          //       project: _project,
+                          //     ),
+                          //   ),
+                          // );
                         }
                       } else if (_taskName.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(

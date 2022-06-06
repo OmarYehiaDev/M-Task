@@ -34,51 +34,13 @@ class _TasksViewState extends State<TasksView> {
 
     return Scaffold(
       key: _key,
-      body: StreamBuilder<List<Task>>(
-        stream: _api.getTasks(_project.tasks).asStream(),
+      body: FutureBuilder<List<Task>>(
+        future: _api.getTasks(_project.tasks),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error happened ${snapshot.error}");
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             List<Task> tasks = snapshot.data!;
             return Scaffold(
-              // backgroundColor: Colors.white,
-              // appBar: AppBar(
-              //   elevation: 0,
-              //   bottom: PreferredSize(
-              //     child: Container(
-              //       color: const Color(0xff94adb4),
-              //       height: 2,
-              //       width: 320,
-              //     ),
-              //     preferredSize: const Size.fromHeight(4.0),
-              //   ),
-              //   centerTitle: true,
-              //   backgroundColor: const Color(0xff076792),
-              //   title: Text(
-              //     _project.title,
-              //     style: const TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 35,
-              //       fontWeight: FontWeight.w700,
-              //       shadows: [
-              //         Shadow(color: Color(0xa6A2B6D4), blurRadius: 20),
-              //       ],
-              //     ),
-              //   ),
-              //   leading: BackButton(
-              //     onPressed: () {
-              //       Navigator.pop(context);
-              //     },
-              //   ),
-              //   actions: [
-              //     IconButton(
-              //       onPressed: () {
-              //         rebuildAllChildren(_key.currentState!.context);
-              //       },
-              //       icon: Icon(Icons.refresh),
-              //     ),
-              //   ],
-              // ),
               body: Column(
                 children: [
                   Center(
@@ -103,8 +65,8 @@ class _TasksViewState extends State<TasksView> {
                       itemCount: tasks.length,
                       itemBuilder: (BuildContext context, int index) {
                         Task _task = tasks[index];
-                        return StreamBuilder<List<User>>(
-                          stream: _api.getTaskMembers(_task.members).asStream(),
+                        return FutureBuilder<List<User>>(
+                          future: _api.getTaskMembers(_task.members),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) Text("Error Happened");
                             if (snapshot.hasData) {
