@@ -394,6 +394,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                 child: SizedBox(
                                   width: width * 0.82,
                                   child: TextField(
+                                    maxLines: null,
                                     controller: _desc,
                                     readOnly: true,
                                     decoration: InputDecoration(

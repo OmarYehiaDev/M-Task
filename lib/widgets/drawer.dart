@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user.dart';
@@ -49,21 +49,22 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                   currentAccountPicture: CircleAvatar(
                     backgroundColor: Colors.white,
-                    child: CachedNetworkImage(
-                      imageUrl: "https://res.cloudinary.com/esoorappdb/"
-                          "image/upload/v1653291462/users/"
-                          "${_user.username}/picture.jpg",
-                      errorWidget: (context, string, object) {
-                        return Image.asset("assets/images/image.png");
-                      },
-                      progressIndicatorBuilder: (context, string, progress) {
-                        return Text(
-                          ((progress.downloaded / progress.totalSize!))
-                                  .toString() +
-                              "%",
-                        );
-                      },
-                    ),
+                    child: Image.asset("assets/images/image.png"),
+                    // child: CachedNetworkImage(
+                    //   imageUrl: "https://res.cloudinary.com/esoorappdb/"
+                    //       "image/upload/v1653291462/users/"
+                    //       "${_user.username}/picture.jpg",
+                    //   errorWidget: (context, string, object) {
+                    //     return Image.asset("assets/images/image.png");
+                    //   },
+                    //   progressIndicatorBuilder: (context, string, progress) {
+                    //     return Text(
+                    //       ((progress.downloaded / progress.totalSize!))
+                    //               .toString() +
+                    //           "%",
+                    //     );
+                    //   },
+                    // ),
                   ),
                 ),
                 ListTile(

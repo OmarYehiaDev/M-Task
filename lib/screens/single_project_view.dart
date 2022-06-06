@@ -61,16 +61,16 @@ class _ProjectState extends State<SingleProjectView> {
     // double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _key,
-      body: StreamBuilder<User>(
-        stream: _api.fetchUserData().asStream(),
+      body: FutureBuilder<User>(
+        future: _api.fetchUserData(),
         builder: (context_, snapshot) {
           if (snapshot.hasError) Text("Error Happened");
           if (snapshot.hasData) {
             User current = snapshot.data!;
 
             return Scaffold(
-              body: StreamBuilder<Map<int, Object>?>(
-                stream: fetchMems().asStream(),
+              body: FutureBuilder<Map<int, Object>?>(
+                future: fetchMems(),
                 builder: (context_, snapshot) {
                   if (snapshot.hasError) Text("Error Happened");
                   if (snapshot.hasData) {
