@@ -35,7 +35,7 @@ class _ProjectState extends State<SingleProjectView> {
   }
 
   Future<Map<int, Object>?> fetchMems() async {
-    final Project project = widget.project;
+    final Project project = await _api.fetchProject(widget.project.url);
 
     if (project.group.isNotEmpty) {
       Group group = await _api.fetchGroup(project.group);
@@ -44,11 +44,13 @@ class _ProjectState extends State<SingleProjectView> {
         return {
           0: group,
           1: _members,
+          2: project,
         };
       } else {
         return {
           0: group,
           1: List<User>.empty(),
+          2: project,
         };
       }
     }
@@ -57,7 +59,6 @@ class _ProjectState extends State<SingleProjectView> {
 
   @override
   Widget build(BuildContext context) {
-    final Project _project = widget.project;
     // double width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: _key,
@@ -77,13 +78,14 @@ class _ProjectState extends State<SingleProjectView> {
                     Map<int, Object> data = snapshot.data!;
                     members = data[1] as List<User>;
                     Group group = data[0] as Group;
+                    Project project = data[2] as Project;
                     onSelected(BuildContext context, int item) async {
                       switch (item) {
                         case 0:
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => AddTask(
-                                project: widget.project,
+                                project: project,
                               ),
                             ),
                           );
@@ -92,7 +94,7 @@ class _ProjectState extends State<SingleProjectView> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => AddMember(
-                                project: widget.project,
+                                project: project,
                                 members: members,
                                 group: group,
                                 current: current,
@@ -104,7 +106,6 @@ class _ProjectState extends State<SingleProjectView> {
                           bool res = (await showDialog<bool>(
                             context: context,
                             builder: (context) {
-                              final Project _project = widget.project;
                               final ApiService _api = ApiService();
 
                               return AlertDialog(
@@ -112,14 +113,15 @@ class _ProjectState extends State<SingleProjectView> {
                                   "Delete project",
                                 ),
                                 content: Text(
-                                  "Are you sure about deleting ${_project.title}?\n"
+                                  "Are you sure about deleting ${project.title}?\n"
                                   "These changes can't be undone once you click on \"Yes\" button..",
                                 ),
                                 actions: [
                                   TextButton.icon(
                                     onPressed: () async {
-                                      bool res =
-                                          await _api.deleteProject(_project);
+                                      bool res = await _api.deleteProject(
+                                        project,
+                                      );
                                       res
                                           ? Navigator.pop(context, true)
                                           : setState(() {});
@@ -153,7 +155,7 @@ class _ProjectState extends State<SingleProjectView> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => MembersView(
-                                      project: _project,
+                                      project: project,
                                       current: current,
                                     ),
                                   ),
@@ -170,7 +172,7 @@ class _ProjectState extends State<SingleProjectView> {
                         title: Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text(
-                            _project.title,
+                            project.title,
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -189,7 +191,7 @@ class _ProjectState extends State<SingleProjectView> {
                           PopupMenuButton<int>(
                             onSelected: (int item) => onSelected(context, item),
                             itemBuilder: (context) =>
-                                _project.owner == current.username
+                                project.owner == current.username
                                     ? [
                                         const PopupMenuItem<int>(
                                           value: 0,
@@ -249,7 +251,7 @@ class _ProjectState extends State<SingleProjectView> {
                           },
                         ),
                       ),
-                      body: TasksView(project: _project),
+                      body: TasksView(project: project),
                       // ListView(
                       //   children: [
                       //     Center(
