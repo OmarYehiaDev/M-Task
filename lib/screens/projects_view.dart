@@ -50,15 +50,15 @@ class _ProjectsViewState extends State<ProjectsView> {
                 padding: const EdgeInsets.fromLTRB(28, 12, 28, 0),
                 child: GestureDetector(
                   onTap: () async {
-                    bool delete = (await Navigator.push(
+                    bool? delete = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => SingleProjectView(
                           project: _project,
                         ),
                       ),
-                    ))!;
-                    if (delete) {
+                    );
+                    if (delete != null && delete) {
                       _projectsUrls.remove(
                         _projectsUrls[index],
                       );

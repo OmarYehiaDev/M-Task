@@ -9,7 +9,7 @@ import 'package:project/services/middleware.dart';
 import '../models/group.dart';
 import '../models/user.dart';
 import 'AddMember.dart';
-// import 'package:project/screens/addWork_screen.dart';
+import 'single_project_view.dart';
 
 class AddTask extends StatefulWidget {
   final Project project;
@@ -399,28 +399,28 @@ class _AddTask extends State<AddTask> {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   Text(
-                                    "Added task successfully\n",
-                                    // "Redirecting to tasks Page",
+                                    "Added task successfully\n"
+                                    "Redirecting to tasks Page",
                                   ),
-                                  // Padding(
-                                  //   padding: EdgeInsets.all(8),
-                                  //   child: CircularProgressIndicator(),
-                                  // ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: CircularProgressIndicator(),
+                                  ),
                                 ],
                               ),
                             ),
                           );
-                          // await Future.delayed(
-                          //   Duration(seconds: 4),
-                          // );
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => TasksView(
-                          //       project: _project,
-                          //     ),
-                          //   ),
-                          // );
+                          await Future.delayed(
+                            Duration(seconds: 4),
+                          );
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SingleProjectView(
+                                project: _project,
+                              ),
+                            ),
+                          );
                         }
                       } else if (_taskName.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
