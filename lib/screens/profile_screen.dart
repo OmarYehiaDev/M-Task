@@ -1,6 +1,9 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_constructors_in_immutables
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:project/models/user.dart';
 
 import '../services/middleware.dart';
@@ -17,8 +20,24 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ApiService _api = ApiService();
   final TextEditingController _usernameCon = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  String _uploading = "false";
+  XFile? pickedFile;
+  String _url = "";
   @override
   Widget build(BuildContext context) {
+    ImageProvider returnImage() {
+      if (_url.isNotEmpty) {
+        return NetworkImage(
+          _url,
+        );
+      } else {
+        return AssetImage(
+          "assets/images/image.png",
+        );
+      }
+    }
+
     User user = widget.user;
     return Scaffold(
       appBar: AppBar(
@@ -61,17 +80,81 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100.0),
-                        // TODO: implementing `ChangePic` Function
-                        child: Image.asset(
-                          "assets/images/image.png",
-                          height: 150.0,
-                          width: 150.0,
-                          fit: BoxFit.cover,
+                        child: Stack(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                File? _image;
+                                pickedFile = await _picker.pickImage(
+                                  source: ImageSource.gallery,
+                                );
 
-                          //change image fill type
+                                if (pickedFile != null) {
+                                  _image = File(pickedFile!.path);
+                                  var path = _image.path;
+                                  var lastSeparator = path.lastIndexOf(
+                                    Platform.pathSeparator,
+                                  );
+                                  var newPath = path.substring(
+                                        0,
+                                        lastSeparator + 1,
+                                      ) +
+                                      "${user.username}.png";
+                                  _image = await _image.rename(newPath);
+                                  setState(() {
+                                    _uploading = "true";
+                                  });
+                                  String url =
+                                      await _api.uploadPic(_image, user.url);
+                                  setState(
+                                    () {
+                                      _uploading = "done";
+                                      _url = url;
+                                    },
+                                  );
+                                }
+                              },
+                              child: Container(
+                                height: 150,
+                                width: 150,
+                                child: CircleAvatar(
+                                  radius: 75,
+                                  backgroundColor: Colors.black.withOpacity(
+                                    0.35,
+                                  ),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: returnImage(),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                    _uploading == "true"
+                        ? const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(),
+                          )
+                        : _uploading == "done"
+                            ? const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Uploaded Successfully",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                            : Container(),
                     Center(
                       child: const Text(
                         'Change User Name',

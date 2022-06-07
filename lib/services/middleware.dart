@@ -1,9 +1,8 @@
 // ignore_for_file: avoid_print, prefer_const_constructors
 
 import 'dart:convert';
-// import 'dart:io';
+import 'dart:io';
 
-// import 'package:cloudinary_sdk/cloudinary_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:project/helpers/constants.dart';
 import 'package:project/services/sharedPrefs.dart';
@@ -799,6 +798,46 @@ class ApiService {
       } else {
         throw Exception("Failed to update");
       }
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
+  ///* Function made to upload profile pic
+  Future<String> uploadPic(
+    File img,
+    String username,
+  ) async {
+    String _token = _prefs.getData("token");
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(kProfile),
+    );
+
+    request.fields.addAll({
+      'user': username,
+    });
+    request.files.add(
+      await http.MultipartFile.fromPath('pic', img.path),
+    );
+    request.headers.addAll(
+      {
+        "Authorization": _token,
+        "Content-Type": "application/json",
+      },
+    );
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 201) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      Map<String, dynamic> data = jsonDecode(
+        await response.stream.bytesToString(),
+      );
+      return data["url"];
     } else {
       /// If the server did not return a 200 OK response,
       /// then throw an exception.
