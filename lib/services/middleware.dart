@@ -255,7 +255,7 @@ class ApiService {
     }
   }
 
-  ///* Function made to create projects
+  ///* Function made to create Task
   Future<bool> addTask(
     String project,
     String title,
@@ -302,7 +302,11 @@ class ApiService {
     String _token = _prefs.getData("token");
     final response = await http.post(
       Uri.parse(kProjectsUrl),
-      body: {"title": name, "group": ""},
+      body: {
+        "title": name,
+        "group": "",
+        "end": endDate.toIso8601String(),
+      },
       headers: {
         "Authorization": _token,
       },
@@ -784,6 +788,7 @@ class ApiService {
       Group group = Group.fromRawJson(response.body);
       bool updated = await updateProject(
         project.copyWith(
+          end: project.end,
           url: project.url,
           id: project.id,
           owner: project.owner,
@@ -808,7 +813,6 @@ class ApiService {
   ///* Function made to upload profile pic
   Future<String> uploadPic(
     File img,
-    String username,
   ) async {
     String _token = _prefs.getData("token");
     var request = http.MultipartRequest(
@@ -816,9 +820,6 @@ class ApiService {
       Uri.parse(kProfile),
     );
 
-    request.fields.addAll({
-      'user': username,
-    });
     request.files.add(
       await http.MultipartFile.fromPath('pic', img.path),
     );
@@ -837,6 +838,47 @@ class ApiService {
       Map<String, dynamic> data = jsonDecode(
         await response.stream.bytesToString(),
       );
+      await _prefs.saveData("profile_pic", jsonEncode(data));
+      return data["url"];
+    } else {
+      /// If the server did not return a 200 OK response,
+      /// then throw an exception.
+      throw Exception('Failed to load types');
+    }
+  }
+
+  ///* Function made to update profile pic
+  Future<String> updatePic(
+    File img,
+  ) async {
+    String _token = _prefs.getData("token");
+    String _url = jsonDecode(
+      _prefs.getData("profile_pic"),
+    )["url"];
+    var request = http.MultipartRequest(
+      'PUT',
+      Uri.parse(_url),
+    );
+
+    request.files.add(
+      await http.MultipartFile.fromPath('pic', img.path),
+    );
+    request.headers.addAll(
+      {
+        "Authorization": _token,
+        "Content-Type": "application/json",
+      },
+    );
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      /// If the server did return a 200 OK response,
+      /// then parse the JSON.
+      Map<String, dynamic> data = jsonDecode(
+        await response.stream.bytesToString(),
+      );
+      await _prefs.saveData("profile_pic", jsonEncode(data));
       return data["url"];
     } else {
       /// If the server did not return a 200 OK response,

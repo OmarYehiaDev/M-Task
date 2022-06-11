@@ -10,6 +10,7 @@ class Project {
     required this.owner,
     required this.title,
     required this.created,
+    required this.end,
     required this.tasks,
     required this.group,
   });
@@ -19,6 +20,7 @@ class Project {
   final String owner;
   final String title;
   final DateTime created;
+  final DateTime end;
   final List tasks;
   final String group;
 
@@ -28,6 +30,7 @@ class Project {
     required String owner,
     required String title,
     required DateTime created,
+    required DateTime end,
     required List tasks,
     required String group,
   }) =>
@@ -37,6 +40,7 @@ class Project {
         owner: owner ?? this.owner,
         title: title ?? this.title,
         created: created ?? this.created,
+        end: end ?? this.end,
         tasks: tasks ?? this.tasks,
         group: group ?? this.group,
       );
@@ -53,6 +57,9 @@ class Project {
         created: DateTime.parse(
           json["created"],
         ),
+        end: DateTime.parse(
+          json["end"],
+        ),
         tasks: json["tasks"] ?? [],
         group: json["group"] ?? "",
       );
@@ -63,6 +70,7 @@ class Project {
         "owner": owner,
         "title": title,
         "created": created.toIso8601String(),
+        "end": end.toIso8601String(),
         "tasks": tasks,
         "group": group,
       };

@@ -240,6 +240,7 @@ class _AddMemberState extends State<AddMember> {
                             MaterialPageRoute(
                               builder: (_) => MembersView(
                                 project: project.copyWith(
+                                  end: project.end,
                                   url: project.url,
                                   id: project.id,
                                   owner: project.owner,
@@ -296,6 +297,7 @@ class _AddMemberState extends State<AddMember> {
                               MaterialPageRoute(
                                 builder: (_) => MembersView(
                                   project: project.copyWith(
+                                    end:project.end,
                                     url: project.url,
                                     id: project.id,
                                     owner: project.owner,

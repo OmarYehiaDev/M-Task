@@ -136,7 +136,7 @@ class _ProjectsViewState extends State<ProjectsView> {
                             children: [
                               Text(
                                 DateFormat.yMMMMEEEEd().format(
-                                  _project.created,
+                                  _project.end,
                                 ),
                                 style: const TextStyle(
                                   color: Colors.white,

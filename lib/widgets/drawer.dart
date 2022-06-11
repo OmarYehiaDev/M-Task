@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, avoid_print
 
 // import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../models/user.dart';
@@ -10,6 +12,7 @@ import '../screens/onboarding_screens.dart';
 import '../screens/profile_screen.dart';
 import '../screens/settings_screen.dart';
 import '../services/middleware.dart';
+import '../services/sharedPrefs.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key? key}) : super(key: key);
@@ -20,9 +23,25 @@ class DrawerWidget extends StatefulWidget {
 
 class _DrawerWidgetState extends State<DrawerWidget> {
   final ApiService _api = ApiService();
+  final SharedPrefsUtils _prefs = SharedPrefsUtils.getInstance();
 
   @override
   Widget build(BuildContext context) {
+    var raw = _prefs.getData("profile_pic");
+    Map<String, dynamic>? data = raw == null ? null : jsonDecode(raw);
+
+    ImageProvider image() {
+      if (data != null) {
+        return NetworkImage(
+          data["pic"],
+        );
+      } else {
+        return AssetImage(
+          "assets/images/image.png",
+        );
+      }
+    }
+
     return StreamBuilder<User>(
       stream: _api.fetchUserData().asStream(),
       builder: (context, snapshot) {
@@ -38,33 +57,22 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   decoration: BoxDecoration(
                     color: Color(0xff076792),
                   ),
+                  onDetailsPressed: null,
+                  otherAccountsPicturesSize: Size.zero,
                   accountName: Text(
                     _user.username,
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 25,
                     ),
                   ),
-                  accountEmail: Text(
-                    _user.email,
-                  ),
+                  accountEmail: _user.email.isEmpty
+                      ? null
+                      : Text(
+                          _user.email,
+                        ),
+                  currentAccountPictureSize: Size.square(90),
                   currentAccountPicture: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Image.asset("assets/images/image.png"),
-                    // child: CachedNetworkImage(
-                    //   imageUrl: "https://res.cloudinary.com/esoorappdb/"
-                    //       "image/upload/v1653291462/users/"
-                    //       "${_user.username}/picture.jpg",
-                    //   errorWidget: (context, string, object) {
-                    //     return Image.asset("assets/images/image.png");
-                    //   },
-                    //   progressIndicatorBuilder: (context, string, progress) {
-                    //     return Text(
-                    //       ((progress.downloaded / progress.totalSize!))
-                    //               .toString() +
-                    //           "%",
-                    //     );
-                    //   },
-                    // ),
+                    backgroundImage: image(),
                   ),
                 ),
                 ListTile(

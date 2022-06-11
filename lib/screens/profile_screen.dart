@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_constructors_in_immutables
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:project/models/user.dart';
 
 import '../services/middleware.dart';
+import '../services/sharedPrefs.dart';
 
 class ProfileScreen extends StatefulWidget {
   final User user;
@@ -18,18 +20,21 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final SharedPrefsUtils _prefs = SharedPrefsUtils.getInstance();
   final ApiService _api = ApiService();
   final TextEditingController _usernameCon = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   String _uploading = "false";
   XFile? pickedFile;
-  String _url = "";
   @override
   Widget build(BuildContext context) {
+    var raw = _prefs.getData("profile_pic");
+    Map<String, dynamic>? _url = raw == null ? null : jsonDecode(raw);
+
     ImageProvider returnImage() {
-      if (_url.isNotEmpty) {
+      if (_url != null) {
         return NetworkImage(
-          _url,
+          _url["pic"],
         );
       } else {
         return AssetImage(
@@ -104,12 +109,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   setState(() {
                                     _uploading = "true";
                                   });
-                                  String url =
-                                      await _api.uploadPic(_image, user.url);
+                                  if (_url != null) {
+                                    await _api.updatePic(_image);
+                                  } else {
+                                    await _api.uploadPic(_image);
+                                  }
                                   setState(
                                     () {
                                       _uploading = "done";
-                                      _url = url;
                                     },
                                   );
                                 }
