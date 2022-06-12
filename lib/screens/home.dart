@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       key: _key,
       body: FutureBuilder<bool>(
-        future: Future.delayed(Duration(seconds: 10), () {
+        future: Future.delayed(Duration(seconds: 5), () {
           return true;
         }),
         builder: (context, snapshot) {
@@ -174,7 +174,9 @@ class _HomePageState extends State<HomePage> {
                     drawer: DrawerWidget(),
                   );
                 } else if (snapshot.hasError) {
-                  return Text("Error Happened");
+                  return Center(
+                    child: Text("Error Happened"),
+                  );
                 }
 
                 return Center(

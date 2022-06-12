@@ -1,7 +1,7 @@
 // ignore_for_file: use_key_in_widgetructors, preferructors, prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
-import 'package:project/screens/home.dart';
+// import 'package:project/screens/home.dart';
 import 'package:project/screens/sign_in.dart';
 import '../models/user.dart';
 import '../helpers/constants.dart';
@@ -395,7 +395,7 @@ class _SignUpState extends State<SignUp> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(),
+                            builder: (context) => SignIn(),
                           ),
                         );
                       } else if (confirmPass != password) {

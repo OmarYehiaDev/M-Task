@@ -70,7 +70,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       : Text(
                           _user.email,
                         ),
-                  currentAccountPictureSize: Size.square(90),
+                  currentAccountPictureSize:
+                      _user.email.isEmpty ? Size.square(90) : Size.square(70),
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: image(),
                   ),

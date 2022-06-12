@@ -6,10 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:project/models/project.dart';
 import 'package:project/services/middleware.dart';
 
-import 'models/task.dart';
-import 'models/user.dart';
-import 'screens/AddMember.dart';
-// import 'package:project/screens/addWork_screen.dart';
+import '../models/task.dart';
+import '../models/user.dart';
+import '../screens/AddMember.dart';
 
 class EditTask extends StatefulWidget {
   final Project project;

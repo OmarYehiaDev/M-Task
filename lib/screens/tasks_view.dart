@@ -7,7 +7,7 @@ import 'package:project/models/task.dart';
 import 'package:project/models/user.dart';
 import 'package:project/screens/single_task_view.dart';
 
-import 'services/middleware.dart';
+import '../services/middleware.dart';
 
 class TasksView extends StatefulWidget {
   final Project project;

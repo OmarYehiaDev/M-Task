@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:project/models/project.dart';
 import 'package:project/screens/members_view.dart';
 import 'package:project/services/middleware.dart';
-// import 'package:project/widgets/empty_groups.dart';
 import '../models/group.dart';
 import '../models/user.dart';
-import '../tasks_view.dart';
-// import '../widgets/empty_tasks.dart';
+import 'tasks_view.dart';
 import 'AddMember.dart';
 import 'add_task_screen.dart';
 

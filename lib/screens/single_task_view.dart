@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:project/services/middleware.dart';
 
-import '../edit_task.dart';
+import 'edit_task.dart';
 import '../models/project.dart';
 import '../models/task.dart';
 import '../models/user.dart';
