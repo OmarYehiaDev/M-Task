@@ -92,6 +92,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     desc: task.desc,
                                     status: "in progress",
                                     members: task.members,
+                                    complete: task.complete,
                                   );
                                   bool res = await _api.updateTask(_task);
                                   res
@@ -104,6 +105,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               TextButton(
                                 onPressed: () async {
                                   Task _task = task.copyWith(
+                                    complete: task.complete,
                                     url: task.url,
                                     projectId: task.projectId,
                                     id: task.id,
@@ -208,6 +210,25 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                       res ? setState(() {}) : setState(() {});
                       setState(() {});
                       break;
+                    case 5:
+                      Task _task = task.copyWith(
+                        url: task.url,
+                        projectId: task.projectId,
+                        id: task.id,
+                        owner: task.owner,
+                        project: task.project,
+                        title: task.title,
+                        start: task.start,
+                        end: task.end,
+                        desc: task.desc,
+                        status: task.status,
+                        members: task.members,
+                        complete: true,
+                      );
+                      bool res = await _api.updateTask(_task);
+                      res ? Navigator.pop(context, res) : setState(() {});
+                      res ? setState(() {}) : setState(() {});
+                      break;
                   }
                 }
 
@@ -257,6 +278,13 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                         child: Text('Delete task'),
                                       ),
                                       const PopupMenuItem<int>(
+                                        value: 5,
+                                        child: Text('Mark as complete'),
+                                      ),
+                                      const PopupMenuDivider(
+                                        height: 1,
+                                      ),
+                                      const PopupMenuItem<int>(
                                         value: 3,
                                         child: Text("Refresh"),
                                       ),
@@ -275,6 +303,16 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                           const PopupMenuItem<int>(
                                             value: 4,
                                             child: Text('Delete task'),
+                                          ),
+                                          const PopupMenuDivider(
+                                            height: 1,
+                                          ),
+                                          const PopupMenuItem<int>(
+                                            value: 5,
+                                            child: Text('Mark as complete'),
+                                          ),
+                                          const PopupMenuDivider(
+                                            height: 1,
                                           ),
                                           const PopupMenuItem<int>(
                                             value: 3,

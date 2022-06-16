@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:project/models/project.dart';
 import 'package:project/services/middleware.dart';
 
-import '../models/group.dart';
+// import '../models/group.dart';
 import '../models/user.dart';
 import 'AddMember.dart';
 import 'single_project_view.dart';
@@ -240,14 +240,8 @@ class _AddTask extends State<AddTask> {
                   ],
                 ),
               ),
-              FutureBuilder<Group>(
-                future: _api.fetchGroup(_project.group),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasError) Text("Error Happened");
-                  if (snapshot.hasData) {
-                    Group group = snapshot.data!;
-                    return FutureBuilder<List<User>>(
-                      future: _api.getGroupMembers(group.members),
+              FutureBuilder<List<User>>(
+                      future: _api.getUsers(),
                       builder: (context, snapshot2) {
                         if (snapshot2.hasData) {
                           final List<User> users = snapshot2.data!;
@@ -346,7 +340,7 @@ class _AddTask extends State<AddTask> {
                               ),
                             ),
                           );
-                        } else if (snapshot.hasError) {
+                        } else if (snapshot2.hasError) {
                           return Text("Error Happened");
                         }
 
@@ -354,13 +348,7 @@ class _AddTask extends State<AddTask> {
                           child: CircularProgressIndicator(),
                         );
                       },
-                    );
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
+                    ),
               SizedBox(
                 height: 200,
                 child: Center(

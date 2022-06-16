@@ -196,16 +196,15 @@ class _EditTask extends State<EditTask> {
                                 future: _api.getTaskMembers(task.members),
                                 builder: (context, snapshot2) {
                                   if (snapshot2.hasData) {
-                                    final List<User> users = allUsers;
                                     final List<AppProfile> usersProfiles =
                                         List.generate(
-                                      users.length,
+                                      allUsers.length,
                                       (i) => AppProfile(
-                                        users[i].firstName +
+                                        allUsers[i].firstName +
                                             " " +
-                                            users[i].lastName,
-                                        users[i].username,
-                                        users[i].url,
+                                            allUsers[i].lastName,
+                                        allUsers[i].username,
+                                        allUsers[i].url,
                                       ),
                                     );
                                     members = snapshot2.data!;
@@ -417,6 +416,7 @@ class _EditTask extends State<EditTask> {
                               String _taskName = taskNameCon.text;
                               String _taskNote = noteCon.text;
                               Task _task = task.copyWith(
+                                complete: task.complete,
                                 url: task.url,
                                 projectId: task.projectId,
                                 id: task.id,

@@ -91,7 +91,7 @@ class User {
 }
 
 List<User> decodeUsersFromJSON(String data) => List<User>.from(
-      json.decode(data)["results"].map(
+      json.decode(data).map(
             (user) => User.fromJson(
               user,
             ),

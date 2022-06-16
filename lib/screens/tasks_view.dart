@@ -221,6 +221,23 @@ class _TasksViewState extends State<TasksView> {
                                               ),
                                             ),
                                           ),
+                                          _task.complete
+                                              ? Center(
+                                                  child: Text(
+                                                    "COMPLETED",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Color.fromARGB(
+                                                        255,
+                                                        181,
+                                                        209,
+                                                        218,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SizedBox(),
                                         ],
                                       ),
                                     ),

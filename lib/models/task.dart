@@ -16,6 +16,7 @@ class Task {
     required this.desc,
     required this.status,
     required this.members,
+    required this.complete,
   });
 
   final String url;
@@ -29,6 +30,7 @@ class Task {
   final String desc;
   final String status;
   final List members;
+  final bool complete;
 
   Task copyWith({
     required String url,
@@ -42,6 +44,7 @@ class Task {
     required String desc,
     required String status,
     required List members,
+    required bool complete,
   }) =>
       Task(
         url: url ?? this.url,
@@ -55,6 +58,7 @@ class Task {
         desc: desc ?? this.desc,
         status: status ?? this.status,
         members: members ?? this.members,
+        complete: complete ?? this.complete,
       );
 
   factory Task.fromRawJson(String str) => Task.fromJson(json.decode(str));
@@ -77,6 +81,7 @@ class Task {
         desc: json["desc"],
         status: json["status"],
         members: json["members"],
+        complete: json["complete"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -91,6 +96,7 @@ class Task {
         "desc": desc,
         "members": members,
         "status": status,
+        "complete": complete,
       };
 }
 

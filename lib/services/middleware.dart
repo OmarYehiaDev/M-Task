@@ -521,6 +521,7 @@ class ApiService {
       members.remove(current.url);
       userTasks.remove(task.url);
       Task _task = task.copyWith(
+        complete: task.complete,
         url: task.url,
         projectId: task.projectId,
         id: task.id,
